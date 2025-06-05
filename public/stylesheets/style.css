@@ -6,3 +6,7 @@ body {
 a {
   color: #00B7FF;
 }
+
+.borda {
+  border-radius: 10px;
+}
