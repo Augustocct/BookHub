@@ -3,8 +3,14 @@ var router = express.Router();
 const db = require('../db');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'BookHub' });
+router.get('/', async function(req, res, next) {
+  try {
+    const livros = await db.buscaLivros();
+    console.log(livros); // Veja o que está vindo do banco
+    res.render('index', { title: 'BookHub', livros });
+  } catch (error) {
+    res.render('index', { title: 'BookHub', livros: [], error: error.message });
+  }
 });
 
 router.get('/register', function(req, res) {
@@ -13,6 +19,27 @@ router.get('/register', function(req, res) {
 
 router.get('/login', function(req, res) {
   res.render('login', { title: 'Entrar', action: "/logar", query: req.query });
+});
+
+router.get('/livros', async function(req, res, next) {
+  try {
+    const categorias = await db.buscaCategorias();
+    const categoriaId = req.query.categoria;
+    const inputBusca = req.query.inputBusca;
+    let livros;
+    if (inputBusca) {
+      livros = await db.buscaLivrosPorNome(inputBusca);
+    } else if (categoriaId) {
+      livros = await db.buscaLivrosPorCategoria(categoriaId);
+    } else {
+      livros = await db.buscaLivros();
+    }
+    
+    console.log(categorias); // Veja o que está vindo do banco
+    res.render('livros', { title: 'BookHub', categorias, livros, query: inputBusca });
+  } catch (error) {
+    res.render('livros', { title: 'BookHub', categorias: [], livros: [], error: error.message });
+  }
 });
 
 router.post("/logar", async function (req, res) {

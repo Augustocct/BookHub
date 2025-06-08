@@ -3,10 +3,13 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
-  color: #00B7FF;
-}
-
 .borda {
   border-radius: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0005;
+  transition: transform 0.3s ease;
+}
+
+.borda:hover {
+    transform: scale(1.05);
 }

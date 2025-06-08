@@ -40,5 +40,33 @@ async function buscaUser(usuario) {
     return rows[0];
 }
 
+async function buscaLivros() {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro;";
+    const [rows] = await conn.query(sql);
+    return rows;
+}
 
-module.exports = {registraUser, buscaUser}
+async function buscaCategorias() {
+    const conn = await connect();
+    const sql = "SELECT * FROM categoria;";
+    const [rows] = await conn.query(sql);
+    return rows;
+}
+
+async function buscaLivrosPorCategoria(categoriaId) {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro WHERE categoria_id = ?;";
+    const [rows] = await conn.query(sql, [categoriaId]);
+    return rows;
+}
+
+async function buscaLivrosPorNome(inputBusca) {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro WHERE titulo LIKE ? OR autor LIKE ?;";
+    const [rows] = await conn.query(sql, [`%${inputBusca}%`, `%${inputBusca}%`]);
+    return rows;
+}
+
+
+module.exports = {registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome};

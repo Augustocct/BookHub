@@ -10,33 +10,35 @@
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 
-<body style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center;">
-  <nav class="navbar fixed-top navbar-expand-lg navbar-dark justify-content-between" style="background-color: #1E1E1E;">
-    <a class="navbar-brand" href="#">BookHub</a>
-    <div class="ml-auto">
-      <a class="btn btn-outline-success my-2 my-sm-0" href="/login">Login</a>
-      <a class="btn btn-outline-success my-2 my-sm-0" href="/register">Register</a>
+<body
+  style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center; font-family: Lucida Grande, Helvetica, Arial, sans-serif;">
+  <%- include partials/navbarComponent %>
+    <div class="container d-flex flex-column align-items-center justify-content-center" style="max-width: fit-content;">
+      <!-- Título e subtítulo centralizados -->
+      <div class="text-center pt-3">
+        <h1 class="fw-bold" style=" font-weight: bold;">DESCUBRA LIVROS INCRÍVEIS</h1>
+        <p class="text-muted">Explore nossa coleção e encontre sua próxima leitura favorita</p>
+      </div>
+
+      <div class="container mt-3">
+        <!-- Título centralizado acima das imagens -->
+        <h3 class=" mb-3 text-left mx-1" style="text-align: left;  font-weight: bold;">Livros em destaque</h3>
+
+        <!-- Imagens centralizadas -->
+        <div class="d-flex justify-content-center flex-wrap">
+          <% livros.slice(0, 4).forEach(livro=> { %>
+            <img src="<%= livro.capa_url %>" class="borda mx-1" alt="<%= livro.titulo %>" width="200" height="300">
+            <% }); %>
+        </div>
+
+        <h3 class="fw-semibold mt-3 text-left" style="text-align: left;">Categorias</h3>
+        <div class="d-flex justify-content-start mb-3">
+          <button type="button" class="borda btn btn-secondary">Ficção</button>
+          <button type="button" class="borda btn btn-secondary mx-1">Aventura</button>
+          <button type="button" class="borda btn btn-secondary">Fantasia</button>
+        </div>
+      </div>
     </div>
-  </nav>
-  <div class="container d-flex flex-column align-items-center justify-content-center">
-  <!-- Título e subtítulo centralizados -->
-  <div class="text-center mb-5">
-    <h1 class="fw-bold">Descubra livros incríveis</h1>
-    <p class="text-muted">Explore nossa coleção e encontre sua próxima leitura favorita</p>
-  </div>
-  
-  <div class="container mt-3">
-    <!-- Título centralizado acima das imagens -->
-     <h3 class="fw-semibold mb-3 text-left" style="text-align: left;">Livros em destaque</h3>
-    <!-- Imagens centralizadas -->
-    <div class="d-flex justify-content-center flex-wrap">
-      <img src="/images/xmen.jpg" class="borda mx-1" alt="" width="200" height="300">
-      <img src="/images/xmen.jpg" class="borda mx-1" alt="" width="200" height="300">
-      <img src="/images/xmen.jpg" class="borda mx-1" alt="" width="200" height="300">
-      <img src="/images/xmen.jpg" class="borda mx-1" alt="" width="200" height="300">
-    </div>
-  </div>
-</div>
-  </body>
+</body>
 
 </html>
