@@ -5,6 +5,7 @@
   <title>
     <%= title %>
   </title>
+  <link rel="icon" type="image/png" href="/images/logo.png">
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
     integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -33,11 +34,21 @@
         </div>
 
         <h3 class="fw-semibold mt-3 text-left" style="text-align: left;">Categorias</h3>
-        <div class="d-flex justify-content-start mb-3">
-          <button type="button" class="borda btn btn-secondary">Ficção</button>
-          <button type="button" class="borda btn btn-secondary mx-1">Aventura</button>
-          <button type="button" class="borda btn btn-secondary">Fantasia</button>
-        </div>
+        <% if (categorias && categorias.length> 0) { %>
+          <div class="d-flex justify-content-start mb-3 flex-wrap">
+            <% categorias.forEach(function(cat) { %>
+              <button type="button" onclick="window.location.href='/livros?categoria=<%= cat.id %>'"
+                class="borda btn btn-secondary mx-1 my-1">
+                <%= cat.nome %>
+              </button>
+              <% }); %>
+          </div>
+          <% } %>
+            <div class="container d-flex justify-content-center mt-3">
+              <a href="/login" style="width: 50%;""><h5 class=" text-muted text-center">Faça o login para acessar a
+                leitura,
+                favoritos ou comentarios</h5></a>
+            </div>
       </div>
     </div>
 </body>

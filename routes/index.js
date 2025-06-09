@@ -6,10 +6,11 @@ const db = require('../db');
 router.get('/', async function (req, res, next) {
   try {
     const livros = await db.buscaLivros();
+    const categorias = await db.buscaCategorias();
     console.log(livros); // Veja o que está vindo do banco
-    res.render('index', { title: 'BookHub', livros });
+    res.render('index', { title: 'BookHub', livros, categorias });
   } catch (error) {
-    res.render('index', { title: 'BookHub', livros: [], error: error.message });
+    res.render('index', { title: 'BookHub', livros: [], categorias: [], error: error.message });
   }
 });
 
@@ -56,7 +57,7 @@ router.get('/livros', async function (req, res, next) {
 
 router.post("/logar", async function (req, res) {
   const email = req.body.email;
-  const senha = req.body.senha;
+  const senha = req.body.senha.min(8);
 
   try {
     const user = await db.buscaUser({ email, senha });
