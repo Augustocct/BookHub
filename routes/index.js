@@ -3,7 +3,7 @@ var router = express.Router();
 const db = require('../db');
 
 /* GET home page. */
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
     const livros = await db.buscaLivros();
     console.log(livros); // Veja o que está vindo do banco
@@ -13,15 +13,27 @@ router.get('/', async function(req, res, next) {
   }
 });
 
-router.get('/register', function(req, res) {
+router.get('/register', function (req, res) {
   res.render('register', { title: 'Registrar', action: "/novoUser", query: req.query });
 });
 
-router.get('/login', function(req, res) {
+router.get('/login', function (req, res) {
   res.render('login', { title: 'Entrar', action: "/logar", query: req.query });
 });
 
-router.get('/livros', async function(req, res, next) {
+router.get('/descricao', async function (req, res, next) {
+  try {
+    const id = req.query.id;
+    const livro = await db.buscaLivroPorId(id);
+    const categorias = await db.buscaCategoriasPorLivroId(id);
+    const comentarios = await db.buscaComentarioPorLivroId(id);
+    res.render('descricao', { title: 'BookHub', livro, categorias, comentarios });
+  } catch (error) {
+    res.render('descricao', { title: 'Descrição', livro: null, categorias: [], comentarios: [], error: error.message });
+  }
+});
+
+router.get('/livros', async function (req, res, next) {
   try {
     const categorias = await db.buscaCategorias();
     const categoriaId = req.query.categoria;
@@ -34,7 +46,7 @@ router.get('/livros', async function(req, res, next) {
     } else {
       livros = await db.buscaLivros();
     }
-    
+
     console.log(categorias); // Veja o que está vindo do banco
     res.render('livros', { title: 'BookHub', categorias, livros, query: inputBusca });
   } catch (error) {
@@ -73,15 +85,15 @@ router.post("/novoUser", async function (req, res) {
   }
 
   try {
-    await db.registraUser({nome, email, senha: senhaA})
+    await db.registraUser({ nome, email, senha: senhaA })
     res.redirect('/?novoUser=true');
     console.log("conseguiu registrar")
   }
 
-  catch(error){
+  catch (error) {
     res.redirect('/?error=' + error);
   }
-  
+
 })
 
 module.exports = router;

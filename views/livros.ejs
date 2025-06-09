@@ -37,10 +37,14 @@
   <div class="row justify-content-center" style="max-width: 500px;">
     <% livros.slice(0, 4).forEach(livro => { %>
       <div class="col-md-6 d-flex justify-content-center mb-2">
-        <img src="<%= livro.capa_url %>" class="borda mx-1" alt="<%= livro.titulo %>" width="auto" style="height: 250px; width: 170px; object-fit: cover;">
+        <a href="/descricao?id=<%= livro.id %>"><img src="<%= livro.capa_url %>" class="borda mx-1" alt="<%= livro.titulo %>" width="auto" style="height: 250px; width: 170px; object-fit: cover;"></a>
       </div>
     <% }); %>
   </div>
+</div>
+
+<div class="container d-flex justify-content-center mt-3">
+  <a href="/login" style="width: 30%;""><h5 class="text-muted text-center">Faça o login para acessar a leitura, favoritos ou comentarios</h5></a>
 </div>
 
 

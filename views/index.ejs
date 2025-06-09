@@ -27,7 +27,8 @@
         <!-- Imagens centralizadas -->
         <div class="d-flex justify-content-center flex-wrap">
           <% livros.slice(0, 4).forEach(livro=> { %>
-            <img src="<%= livro.capa_url %>" class="borda mx-1" alt="<%= livro.titulo %>" width="200" height="300">
+            <a href="/descricao?id=<%= livro.id %>"><img src="<%= livro.capa_url %>" class="borda mx-1"
+                alt="<%= livro.titulo %>" width="200" height="300"></a>
             <% }); %>
         </div>
 

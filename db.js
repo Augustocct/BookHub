@@ -56,7 +56,11 @@ async function buscaCategorias() {
 
 async function buscaLivrosPorCategoria(categoriaId) {
     const conn = await connect();
-    const sql = "SELECT * FROM livro WHERE categoria_id = ?;";
+    const sql = `
+        SELECT l.* FROM livro l
+        JOIN livro_categoria lc ON lc.livro_id = l.id
+        WHERE lc.categoria_id = ?;
+    `;
     const [rows] = await conn.query(sql, [categoriaId]);
     return rows;
 }
@@ -68,5 +72,38 @@ async function buscaLivrosPorNome(inputBusca) {
     return rows;
 }
 
+async function buscaLivroPorId(id) {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro WHERE id = ?;";
+    const [rows] = await conn.query(sql, [id]);
+    return rows[0];
+}
 
-module.exports = {registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome};
+async function buscaCategoriasPorLivroId(livroId) {
+    const conn = await connect();
+    const sql = `
+    SELECT c.* FROM categoria c
+    JOIN livro_categoria lc ON lc.categoria_id = c.id
+    WHERE lc.livro_id = ?;
+  `;
+    const [rows] = await conn.query(sql, [livroId]);
+    return rows;
+}
+
+async function buscaComentarioPorLivroId(livroId) {
+    const conn = await connect();
+    const sql = `
+    SELECT c.* FROM comentarios c
+    JOIN livro_comentario lc ON lc.comentario_id = c.id
+    WHERE lc.livro_id = ?;
+  `;
+    const [rows] = await conn.query(sql, [livroId]);
+    return rows;
+
+}
+
+
+module.exports = {
+    registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId
+};
