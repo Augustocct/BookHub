@@ -17,13 +17,13 @@ BookHub é uma aplicação web para explorar, favoritar e comentar sobre livros.
 - Express.js
 - EJS (Embedded JavaScript Templates)
 - Bootstrap 4
-- Banco de dados relacional (ex: MySQL, PostgreSQL, SQLite)
+- Banco de dados relacional (MySQL)
 
 ## Como rodar o projeto
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/seu-usuario/bookhub.git
+   git clone https://github.com/Augustocct/bookhub.git
    cd bookhub
    ```
 
