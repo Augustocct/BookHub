@@ -20,9 +20,9 @@ async function registraUser(user) {
 
     const conn = await connect();
 
-    const sql = "INSERT INTO user(nome, email, senha) VALUES (?,?,?);"
+    const sql = "INSERT INTO user(nome, email, senha, data_registro) VALUES (?,?,?,?);"
 
-    return await conn.query(sql, [user.nome, user.email, user.senha])
+    return await conn.query(sql, [user.nome, user.email, user.senha, user.data_registro]);
 }
 
 async function buscaUser(usuario) {
@@ -116,8 +116,14 @@ async function adicionaFavorito(userId, livroId) {
     return await conn.query(sql, [userId, livroId]);
 }
 
+async function atualizaUser(id, nome, email, senha) {
+    const conn = await connect();
+    const sql = "UPDATE user SET nome = ?, email = ?, senha = ? WHERE id = ?;";
+    return await conn.query(sql, [nome, email, senha, id]);
+}
+
 
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
-    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser
 };

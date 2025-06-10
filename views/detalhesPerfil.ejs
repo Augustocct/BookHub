@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <link rel='stylesheet' href='/stylesheets/editarPerfil.css' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+
+<body style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center;
+    flex-direction: column; font-family: Lucida Grande, Helvetica, Arial, sans-serif;">
+    <%- include('partials/navbarComponent', { user: user }) %>
+        <div class="container">
+            <div class="row gutters">
+                <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="account-settings">
+                                <div class="user-profile">
+                                    <div class="user-avatar">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png"
+                                            alt="Maxwell Admin">
+                                    </div>
+                                    <h5 class="user-name"><%- user.nome %></h5>
+                                    <h6 class="user-email"><%- user.email %></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <form class="w-100" action="/atualizarPerfil" method="POST">
+                                <div class="row gutters">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <h6 class="mb-2 text-primary">Informações pessoais</h6>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="fullName">Nome</label>
+                                            <input type="text" class="form-control" name="nome"
+                                                placeholder="Enter full name" value="<%= user.nome %>">
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="eMail">Email</label>
+                                            <input type="email" class="form-control" value="<%= user.email %>"
+                                                name="email" placeholder="Enter email ID">
+                                        </div>
+                                    </div>
+                                    <div class=" col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group position-relative">
+                                            <label for="password">Senha</label>
+                                            <input type="password" class="form-control" value="<%= user.senha %>"
+                                                name="senha" id="senhaInput">
+                                            <span class="position-absolute"
+                                                style="top: 38px; right: 16px; cursor: pointer;"
+                                                onclick="toggleSenha()">
+                                                <i id="olhoSenha" class="bi bi-eye"
+                                                    style="font-size: 1.2rem; color: #888;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label for="date">Data de registro</label>
+                                            <input type="text" class="form-control" name="data_registro"
+                                                value="<%= user.data_registro ? new Date(user.data_registro).toLocaleDateString('pt-BR') : '' %>"
+                                                disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row gutters">
+                                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                                        <div class="text-right">
+                                            <button type="button" class="btn btn-secondary"
+                                                onclick="window.location.href='/perfil'">Cancelar</button>
+                                            <button type="submit" id="submit" name="submit"
+                                                class="btn btn-primary">Salvar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleSenha() {
+                const input = document.getElementById('senhaInput');
+                const icon = document.getElementById('olhoSenha');
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    input.type = "password";
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            }
+        </script>
+</body>
+
+</html>

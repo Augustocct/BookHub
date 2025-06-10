@@ -64,7 +64,7 @@ router.get('/addFavorito', async function (req, res, next) {
 }
 );
 
-router.get('/favoritos', verificaLogin, async function (req, res, next) {
+router.get('/favoritos', async function (req, res, next) {
   try {
     const userId = req.session.user.id;
     const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
@@ -96,6 +96,58 @@ router.get('/livros', async function (req, res, next) {
   }
 });
 
+router.get('/perfil', verificaLogin, async function (req, res, next) {
+  try {
+    const userId = req.session.user.id;
+    const user = await db.buscaUserPorId(userId);
+    if (!user) {
+      return res.redirect('/?error=Usuário%20não%20encontrado');
+    }
+    const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
+    res.render('perfil', { title: 'Perfil', user: req.session.user, livrosFavoritos, query: req.query });
+  } catch (error) {
+    console.error("Erro ao buscar perfil:", error);
+    res.render('perfil', { title: 'Perfil', user: req.session.user, livrosFavoritos: [], error: error.message });
+  }
+});
+
+router.get('/detalhesPerfil', verificaLogin, async function (req, res, next) {
+  try {
+    const userId = req.session.user.id;
+    const user = await db.buscaUserPorId(userId);
+    if (!user) {
+      return res.redirect('/?error=Usuário%20não%20encontrado');
+    }
+    res.render('detalhesPerfil', { title: 'Editar Perfil', user: req.session.user, query: req.query });
+  } catch (error) {
+    console.error("Erro ao buscar perfil para edição:", error);
+    res.render('detalhesPerfil', { title: 'Editar Perfil', user: req.session.user, error: error.message });
+  }
+});
+
+router.post('/atualizarPerfil', verificaLogin, async function (req, res) {
+  const userId = req.session.user.id;
+  const nome = req.body.nome;
+  const email = req.body.email;
+  const senha = req.body.senha;
+
+  if (senha && senha.length < 8) {
+    res.redirect('/detalhesPerfil?error=Senha%20precisa%20ter%20no%20mínimo%208%20caracteres');
+    return;
+  }
+
+  try {
+    await db.atualizaUser(userId, nome, email, senha);
+    const userAtualizado = await db.buscaUserPorId(userId);
+    req.session.user = userAtualizado; // Atualiza toda a sessão com os dados do banco
+    res.redirect('/perfil?atualizado=true');
+  } catch (error) {
+    console.error("Erro ao atualizar perfil:", error);
+    res.redirect('/detalhesPerfil?error=' + encodeURIComponent(error.message));
+  }
+}
+);
+
 router.post("/logar", async function (req, res) {
   const email = req.body.email;
   const senha = req.body.senha;
@@ -121,6 +173,12 @@ router.post("/novoUser", async function (req, res) {
   const email = req.body.email
   const senhaA = req.body.senhaA
   const senhaB = req.body.senhaB
+  const dataAtual = new Date();
+
+  if (!senhaA || senhaA.length < 8) {
+    res.redirect('/?error=Senha%20precisa%20ter%20no%20mínimo%208%20caracteres');
+    return;
+  }
 
   if (senhaA !== senhaB) {
     res.redirect('/?error=Senhas%20diferentes');
@@ -128,7 +186,7 @@ router.post("/novoUser", async function (req, res) {
   }
 
   try {
-    await db.registraUser({ nome, email, senha: senhaA })
+    await db.registraUser({ nome, email, senha: senhaA, data_registro: dataAtual });
     res.redirect('/?novoUser=true');
     console.log("conseguiu registrar")
   }

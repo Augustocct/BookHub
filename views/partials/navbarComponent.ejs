@@ -1,9 +1,11 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark justify-content-between" style="background-color: #1E1E1E;">
   <a class="navbar-brand d-flex align-items-center" href="/">
     <img src="/images/logo.png" alt="Logo" width="40" height="40" class="mr-2 rounded">
     BookHub
   </a>
-  <div class="ml-auto">
+  <div class="ml-auto d-flex align-items-center gap-2">
     <% if (user) { %>
       <a class="btn btn-outline-success my-2 my-sm-0" href="/logout">Logout</a>
       <% } else { %>
@@ -12,5 +14,14 @@
           <a class="btn btn-outline-success my-2 my-sm-0" href="/register">Register</a>
           <a class="btn btn-outline-success my-2 my-sm-0" href="/livros">Livros</a>
           <a class="btn btn-outline-success my-2 my-sm-0" href="/favoritos">Favoritos</a>
+          <% if (user) { %>
+            <a href="/perfil?id=<%= user.id %>">
+              <i class="bi bi-person-circle ml-2 btn-outline-success" style="font-size: 2rem;"></i>
+            </a>
+            <% } else { %>
+              <a href="/login">
+                <i class="bi bi-person-circle ml-2 btn-outline-dark" style="font-size: 2rem;"></i>
+              </a>
+              <% } %>
   </div>
 </nav>
