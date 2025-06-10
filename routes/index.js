@@ -45,6 +45,36 @@ router.get('/descricao', async function (req, res, next) {
   }
 });
 
+router.get('/addFavorito', async function (req, res, next) {
+  try {
+    const livroId = req.query.id;
+    const userId = req.session.user ? req.session.user.id : null;
+
+    const livro = await db.buscaLivroPorId(livroId);
+    if (!livro) {
+      return res.redirect('/?error=Livro%20não%20encontrado');
+    }
+
+    await db.adicionaFavorito(userId, livroId);
+    res.redirect(`/descricao?id=${livroId}`);
+  } catch (error) {
+    console.error("Erro ao adicionar favorito:", error);
+    res.redirect('/?error=' + encodeURIComponent(error.message));
+  }
+}
+);
+
+router.get('/favoritos', verificaLogin, async function (req, res, next) {
+  try {
+    const userId = req.session.user.id;
+    const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
+    res.render('favoritos', { title: 'Favoritos', livros: livrosFavoritos, user: req.session.user });
+  } catch (error) {
+    console.error("Erro ao buscar favoritos:", error);
+    res.render('favoritos', { title: 'Favoritos', livros: [], error: error.message, user: req.session.user });
+  }
+});
+
 router.get('/livros', async function (req, res, next) {
   try {
     const categorias = await db.buscaCategorias();

@@ -104,3 +104,11 @@ INSERT INTO livro_comentario (livro_id, comentario_id) VALUES
 (1, 1), (1, 2),
 (2, 3), (2, 4),
 (3, 5);
+
+CREATE TABLE livro_favorito (
+  user_id INT NOT NULL,
+  livro_id INT NOT NULL,
+  PRIMARY KEY (user_id, livro_id),
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (livro_id) REFERENCES livro(id)
+);

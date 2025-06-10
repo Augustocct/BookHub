@@ -28,27 +28,36 @@
                         <div class="col-lg-4 col-md-7 col-sm-6">
                             <h2 class="box-title mt-5 font-weight-bold"><%- livro.titulo %></h2>
                             <h4 class="box-title text-muted mt-1"><%- livro.autor %></h4>
-                            <button class="btn btn-primary btn-rounded mt-2">Adicionar aos favoritos</button>
                             <% if (user) { %>
                                 <button class="btn btn-primary btn-rounded mt-2"
-                                    onclick="window.location.href='/leitura?id=<%= livro.id %>'">Ler agora</button>
+                                    onclick="window.location.href='/addFavorito?id=<%= livro.id %>'">Adicionar aos
+                                    favoritos</button>
                                 <% } else { %>
                                     <button class="btn btn-primary btn-rounded mt-2"
-                                        onclick="window.location.href='/login'">Ler agora</button>
+                                        onclick="window.location.href='/login'">Adicionar aos favoritos</button>
                                     <% } %>
-                                        <% if (categorias && categorias.length> 0) { %>
-                                            <h6 class="box-title text-muted mt-1">
-                                                <% categorias.forEach(function(cat, idx) { %>
-                                                    <%= cat.nome %>
-                                                        <%= idx < categorias.length - 1 ? ', ' : '' %>
-                                                            <% }); %>
-                                            </h6>
-                                            <% } %>
-                                                <div class="text mt-5 w-75">
-                                                    <h4>Descrição</h4>
-                                                    <p class="text-muted "><%- livro.descricao %></p>
-                                                </div>
-                                                <div data-coreui-toggle="rating" data-coreui-value="3"></div>
+                                        <% if (user) { %>
+                                            <button class="btn btn-primary btn-rounded mt-2"
+                                                onclick="window.location.href='/leitura?id=<%= livro.id %>'">Ler
+                                                agora</button>
+                                            <% } else { %>
+                                                <button class="btn btn-primary btn-rounded mt-2"
+                                                    onclick="window.location.href='/login'">Ler agora</button>
+                                                <% } %>
+                                                    <% if (categorias && categorias.length> 0) { %>
+                                                        <h6 class="box-title text-muted mt-1">
+                                                            <% categorias.forEach(function(cat, idx) { %>
+                                                                <%= cat.nome %>
+                                                                    <%= idx < categorias.length - 1 ? ', ' : '' %>
+                                                                        <% }); %>
+                                                        </h6>
+                                                        <% } %>
+                                                            <div class="text mt-5 w-75">
+                                                                <h4>Descrição</h4>
+                                                                <p class="text-muted "><%- livro.descricao %></p>
+                                                            </div>
+                                                            <div data-coreui-toggle="rating" data-coreui-value="3">
+                                                            </div>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 rounded" style="background-color: #262626;">
                             <h4 class="mt-5">Comentários Recentes</h4>

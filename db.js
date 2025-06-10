@@ -40,6 +40,14 @@ async function buscaUser(usuario) {
     return rows[0];
 }
 
+async function buscaUserPorId(userId) {
+    const conn = await connect();
+    const sql = "SELECT * FROM user WHERE id = ?;";
+    const [rows] = await conn.query(sql, [userId]);
+
+    return rows[0];
+}
+
 async function buscaLivros() {
     const conn = await connect();
     const sql = "SELECT * FROM livro;";
@@ -102,8 +110,14 @@ async function buscaComentarioPorLivroId(livroId) {
 
 }
 
+async function adicionaFavorito(userId, livroId) {
+    const conn = await connect();
+    const sql = "INSERT INTO livro_favorito(user_id, livro_id) VALUES (?, ?);";
+    return await conn.query(sql, [userId, livroId]);
+}
+
 
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
-    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId
 };
