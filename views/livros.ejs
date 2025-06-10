@@ -14,7 +14,7 @@
 <body
   style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center; flex-direction: column; font-family: Lucida Grande, Helvetica, Arial, sans-serif;">
 
-  <%- include partials/navbarComponent %>
+  <%- include('partials/navbarComponent', { user: user }) %>
 
     <div class="container d-flex justify-content-center">
       <h1>Exploração de livros</h1>
@@ -52,16 +52,19 @@
       </div>
     </div>
 
-    <div class="container d-flex justify-content-center mt-3">
-      <a href="/login" style="width: 30%;""><h5 class=" text-muted text-center">Faça o login para acessar a leitura,
-        favoritos ou comentarios</h5></a>
-    </div>
+    <% if (!user) { %>
+      <div class="container d-flex justify-content-center mt-3">
+        <a href="/login" style="width: 50%;">
+          <h5 class="text-muted text-center">Faça o login para acessar a leitura, favoritos ou comentários</h5>
+        </a>
+      </div>
+      <% } %>
 
 
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
 </body>
 

@@ -14,7 +14,7 @@
 </head>
 
 <body style="background-color: #2C2C2C; color: #ECECEC; height: 100vh;">
-  <%- include partials/navbarComponent %>
+  <%- include('partials/navbarComponent', { user: user }) %>
     <section class="vh-100">
       <div class="container h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -65,11 +65,19 @@
                       </div>
                     </form>
                     <div class="container d-flex justify-content-center">
-                      <a href="/login">
-                        <h5 class=" text-muted text-center">
-                          Já tem uma conta? Faça login
-                        </h5>
-                      </a>
+                      <% if (!user) { %>
+                        <a href="/login">
+                          <h5 class=" text-muted text-center">
+                            Já tem uma conta? Faça login
+                          </h5>
+                        </a>
+                        <% } else { %>
+                          <a href="/register">
+                            <h5 class=" text-muted text-center">
+                              Não tem uma conta? Registre-se
+                            </h5>
+                          </a>
+                          <% } %>
                     </div>
                   </div>
                 </div>

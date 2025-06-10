@@ -13,7 +13,7 @@
 
 <body
   style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center; font-family: Lucida Grande, Helvetica, Arial, sans-serif;">
-  <%- include partials/navbarComponent %>
+  <%- include('partials/navbarComponent', { user: user }) %>
     <div class="container d-flex flex-column align-items-center justify-content-center" style="max-width: fit-content;">
       <!-- Título e subtítulo centralizados -->
       <div class="text-center pt-3">
@@ -44,11 +44,13 @@
               <% }); %>
           </div>
           <% } %>
-            <div class="container d-flex justify-content-center mt-3">
-              <a href="/login" style="width: 50%;""><h5 class=" text-muted text-center">Faça o login para acessar a
-                leitura,
-                favoritos ou comentarios</h5></a>
-            </div>
+            <% if (!user) { %>
+              <div class="container d-flex justify-content-center mt-3">
+                <a href="/login" style="width: 50%;">
+                  <h5 class="text-muted text-center">Faça o login para acessar a leitura, favoritos ou comentários</h5>
+                </a>
+              </div>
+              <% } %>
       </div>
     </div>
 </body>
