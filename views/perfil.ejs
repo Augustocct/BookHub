@@ -16,25 +16,24 @@
 <body
     style="background-color: #2C2C2C; color: #ECECEC; height: 100vh; display:flex; justify-content: center; flex-direction: column; font-family: Lucida Grande, Helvetica, Arial, sans-serif;">
     <%- include('partials/navbarComponent', { user: user }) %>
-        <section class="h-100 gradient-custom-2">
+        <section class="h-100 gradient-custom-2 rounded">
             <div class="container py-5 ">
                 <div class="row d-flex justify-content-center">
                     <div class="col col-lg-9 col-xl-8">
-                        <div class="card">
+                        <div class="card" style="background-color: #232323 ;">
                             <div class="rounded-top text-white d-flex flex-row"
                                 style="background-color: #000; height:200px;">
                                 <div class="ms-4 mt-5 d-flex flex-column" style="width: 150px;">
                                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
                                         alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
-                                        style="width: 150px; z-index: 1">
-                                    <button type="button" data-mdb-button-init data-mdb-ripple-init
-                                        class="btn btn-outline-dark text-body"
+                                        style="width: 150px; z-index: 1; background-color: #2C2C2C; border-radius: 10px; border: #2C2C2C">
+                                    <button type="button" class="btn btn-outline-success"
                                         onclick="window.location.href='/detalhesPerfil'" data-mdb-ripple-color="dark"
                                         style="z-index: 1;">
-                                        Edit profile
+                                        Editar Perfil
                                     </button>
                                 </div>
-                                <div class="ms-3" style="margin-top: 130px;">
+                                <div class="ms-3" style="margin-top: 130px; color: #F5F5F5 !important;">
                                     <h5>
                                         <%- user.nome %>
                                     </h5>
@@ -42,7 +41,7 @@
                                 </div>
                             </div>
                             <div class="p-4 text-black bg-body-tertiary">
-                                <div class="d-flex justify-content-end text-center py-1 text-body">
+                                <div class="d-flex justify-content-end text-center py-1" style="color: #B0B0B0;">
                                     <div>
                                         <p class="mb-1 h5">253</p>
                                         <p class="small text-muted mb-0">Photos</p>
@@ -58,10 +57,19 @@
                                 </div>
                             </div>
                             <div class="card-body p-4 text-black">
-                                <div class="mb-5  text-body">
+                                <div class="mb-2  text-body">
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center mb-4 text-body">
-                                    <p class="lead fw-normal mb-0">Recent photos</p>
+                                <div class="d-flex justify-content-between align-items-center mb-4"
+                                    style="color: #B0B0B0;">
+                                    <p class="lead fw-normal mb-0">Livros Favoritos</p>
+                                </div>
+                                <!-- Imagens centralizadas -->
+                                <div class="d-flex flex-wrap">
+                                    <% livros.slice(0, 4).forEach(livro=> { %>
+                                        <a href="/descricao?id=<%= livro.id %>"><img src="<%= livro.capa_url %>"
+                                                class="borda mx-1" alt="<%= livro.titulo %>" width="auto"
+                                                height="200"></a>
+                                        <% }); %>
                                 </div>
                             </div>
                         </div>

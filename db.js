@@ -110,6 +110,17 @@ async function buscaComentarioPorLivroId(livroId) {
 
 }
 
+async function buscaLivrosFavoritos(userId) {
+    const conn = await connect();
+    const sql = `
+        SELECT l.* FROM livro l
+        JOIN livro_favorito lf ON lf.livro_id = l.id
+        WHERE lf.user_id = ?;
+    `;
+    const [rows] = await conn.query(sql, [userId]);
+    return rows;
+}
+
 async function adicionaFavorito(userId, livroId) {
     const conn = await connect();
     const sql = "INSERT INTO livro_favorito(user_id, livro_id) VALUES (?, ?);";
@@ -125,5 +136,5 @@ async function atualizaUser(id, nome, email, senha) {
 
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
-    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser, buscaLivrosFavoritos
 };

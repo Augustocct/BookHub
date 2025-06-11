@@ -15,11 +15,11 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/register', function (req, res) {
-  res.render('register', { title: 'Registrar', action: "/novoUser", user: req.session.user, query: req.query });
+  res.render('register', { title: 'BookHub', action: "/novoUser", user: req.session.user, query: req.query });
 });
 
 router.get('/login', function (req, res) {
-  res.render('login', { title: 'Entrar', action: "/logar", user: req.session.user, query: req.query });
+  res.render('login', { title: 'BookHub', action: "/logar", user: req.session.user, query: req.query });
 });
 
 router.get('/logout', function (req, res) {
@@ -41,7 +41,7 @@ router.get('/descricao', async function (req, res, next) {
     const comentarios = await db.buscaComentarioPorLivroId(id);
     res.render('descricao', { title: 'BookHub', livro, categorias, user: req.session.user, comentarios });
   } catch (error) {
-    res.render('descricao', { title: 'Descrição', livro: null, categorias: [], comentarios: [], error: error.message });
+    res.render('descricao', { title: 'BookHub', livro: null, categorias: [], comentarios: [], error: error.message });
   }
 });
 
@@ -68,10 +68,10 @@ router.get('/favoritos', async function (req, res, next) {
   try {
     const userId = req.session.user.id;
     const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
-    res.render('favoritos', { title: 'Favoritos', livros: livrosFavoritos, user: req.session.user });
+    res.render('favoritos', { title: 'BookHub', livros: livrosFavoritos, user: req.session.user });
   } catch (error) {
     console.error("Erro ao buscar favoritos:", error);
-    res.render('favoritos', { title: 'Favoritos', livros: [], error: error.message, user: req.session.user });
+    res.render('favoritos', { title: 'BookHub', livros: [], error: error.message, user: req.session.user });
   }
 });
 
@@ -104,10 +104,10 @@ router.get('/perfil', verificaLogin, async function (req, res, next) {
       return res.redirect('/?error=Usuário%20não%20encontrado');
     }
     const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
-    res.render('perfil', { title: 'Perfil', user: req.session.user, livrosFavoritos, query: req.query });
+    res.render('perfil', { title: 'BookHub', user: req.session.user, livros: livrosFavoritos, query: req.query });
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);
-    res.render('perfil', { title: 'Perfil', user: req.session.user, livrosFavoritos: [], error: error.message });
+    res.render('perfil', { title: 'BookHub', user: req.session.user, livrosFavoritos: [], error: error.message });
   }
 });
 
@@ -118,10 +118,10 @@ router.get('/detalhesPerfil', verificaLogin, async function (req, res, next) {
     if (!user) {
       return res.redirect('/?error=Usuário%20não%20encontrado');
     }
-    res.render('detalhesPerfil', { title: 'Editar Perfil', user: req.session.user, query: req.query });
+    res.render('detalhesPerfil', { title: 'BookHub', user: req.session.user, query: req.query });
   } catch (error) {
     console.error("Erro ao buscar perfil para edição:", error);
-    res.render('detalhesPerfil', { title: 'Editar Perfil', user: req.session.user, error: error.message });
+    res.render('detalhesPerfil', { title: 'BookHub', user: req.session.user, error: error.message });
   }
 });
 
