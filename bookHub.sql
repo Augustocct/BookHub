@@ -113,3 +113,39 @@ CREATE TABLE livro_favorito (
   FOREIGN KEY (user_id) REFERENCES user(id),
   FOREIGN KEY (livro_id) REFERENCES livro(id)
 );
+
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (1, 1);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (1, 2);
+
+-- Livro 2 em três categorias
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 1);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 2);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 3);
+
+-- Livro 3 em uma categoria
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (3, 1);
+
+-- Livro 4 em duas categorias
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (4, 2);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (4, 3);
+
+-- Livro 5 em todas as categorias
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 1);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 2);
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 3);
+
+-- Livro 6 em uma categoria
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (6, 3);
+
+INSERT INTO comentarios (id, mensagem) VALUES (1, 'Adorei esse livro, a história é envolvente do começo ao fim!');
+INSERT INTO comentarios (id, mensagem) VALUES (2, 'Os personagens são muito bem construídos, recomendo a leitura.');
+INSERT INTO comentarios (id, mensagem) VALUES (3, 'Achei o final surpreendente, não esperava por isso!');
+INSERT INTO comentarios (id, mensagem) VALUES (4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.');
+INSERT INTO comentarios (id, mensagem) VALUES (5, 'Um dos melhores livros que já li sobre esse tema.');
+
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 1);
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 2);
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 3);
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 4);
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (3, 5);
+  
