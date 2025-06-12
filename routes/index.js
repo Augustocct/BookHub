@@ -148,6 +148,28 @@ router.post('/atualizarPerfil', verificaLogin, async function (req, res) {
 }
 );
 
+router.post('/comentar', verificaLogin, async function (req, res) {
+  const livroId = req.body.livroId;
+  const mensagem = req.body.mensagem;
+  const userId = req.session.user.id;
+  const data_registro = new Date();
+
+  if (!mensagem || mensagem.trim() === "") {
+    res.redirect(`/descricao?id=${livroId}&error=Comentário%20não%20pode%20ser%20vazio`);
+    return;
+  }
+
+  try {
+    await db.adicionaComentario(livroId, mensagem, data_registro);
+    await db.buscaComentarioPorLivroId(livroId); // Atualiza os comentários após adicionar
+    res.redirect(`/descricao?id=${livroId}`);
+  } catch (error) {
+    console.error("Erro ao adicionar comentário:", error);
+    res.redirect(`/descricao?id=${livroId}&error=` + encodeURIComponent(error.message));
+  }
+}
+);
+
 router.post("/logar", async function (req, res) {
   const email = req.body.email;
   const senha = req.body.senha;

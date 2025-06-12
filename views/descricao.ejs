@@ -62,9 +62,10 @@
                         <div class="col-lg-3 col-md-12 col-sm-12 rounded" style="background-color: #262626;">
                             <h4 class="mt-5">Comentários Recentes</h4>
                             <% if (comentarios && comentarios.length> 0) { %>
-                                <% comentarios.slice(0, 4).forEach(function(com, idx) { %>
+                                <% comentarios.slice(0, 3).forEach(function(com, idx) { %>
                                     <div class="mb-2 p-2 border-bottom">
-                                        <%= com.mensagem %>
+                                        <%= com.mensagem.length> 100 ? com.mensagem.substring(0, 100) :
+                                            com.mensagem %>
                                     </div>
                                     <% }); %>
                                         <% } else { %>
@@ -76,6 +77,16 @@
                         </div>
                         </a>
                         <% } %>
+                            <% if (user) { %>
+                                <form action="/comentar" method="POST" class="mt-3">
+                                    <input type="hidden" name="livroId" value="<%= livro.id %>">
+                                    <div class="form-group">
+                                        <textarea class="form-control" name="mensagem" rows="2"
+                                            placeholder="Escreva seu comentário..." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-success mt-2">Comentar</button>
+                                </form>
+                                <% } %>
                     </div>
                 </div>
             </div>

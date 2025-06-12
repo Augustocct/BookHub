@@ -80,6 +80,7 @@ INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (6, 3);
 CREATE TABLE IF NOT EXISTS comentarios (
   id INT NOT NULL AUTO_INCREMENT,
   mensagem TEXT NOT NULL,
+  data_registro DATETIME NULL,
   PRIMARY KEY (id)
 );
 
@@ -93,12 +94,12 @@ CREATE TABLE IF NOT EXISTS livro_comentario (
 );
 
 -- Inserções nos comentários
-INSERT INTO comentarios (id, mensagem) VALUES 
-(1, 'Adorei esse livro, a história é envolvente do começo ao fim!'),
-(2, 'Os personagens são muito bem construídos, recomendo a leitura.'),
-(3, 'Achei o final surpreendente, não esperava por isso!'),
-(4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.'),
-(5, 'Um dos melhores livros que já li sobre esse tema.');
+INSERT INTO comentarios (id, mensagem, data_registro) VALUES 
+(1, 'Adorei esse livro, a história é envolvente do começo ao fim!', '2025-06-11 19:09:01'),
+(2, 'Os personagens são muito bem construídos, recomendo a leitura.', '2025-06-11 19:09:01'),
+(3, 'Achei o final surpreendente, não esperava por isso!', '2025-06-11 19:09:01'),
+(4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.', '2025-06-11 19:09:01'),
+(5, 'Um dos melhores livros que já li sobre esse tema.', '2025-06-11 19:09:01');
 
 -- Relacionamento entre livros e comentários
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES 
@@ -136,12 +137,6 @@ INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 3);
 
 -- Livro 6 em uma categoria
 INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (6, 3);
-
-INSERT INTO comentarios (id, mensagem) VALUES (1, 'Adorei esse livro, a história é envolvente do começo ao fim!');
-INSERT INTO comentarios (id, mensagem) VALUES (2, 'Os personagens são muito bem construídos, recomendo a leitura.');
-INSERT INTO comentarios (id, mensagem) VALUES (3, 'Achei o final surpreendente, não esperava por isso!');
-INSERT INTO comentarios (id, mensagem) VALUES (4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.');
-INSERT INTO comentarios (id, mensagem) VALUES (5, 'Um dos melhores livros que já li sobre esse tema.');
 
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 1);
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 2);

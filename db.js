@@ -103,7 +103,8 @@ async function buscaComentarioPorLivroId(livroId) {
     const sql = `
     SELECT c.* FROM comentarios c
     JOIN livro_comentario lc ON lc.comentario_id = c.id
-    WHERE lc.livro_id = ?;
+    WHERE lc.livro_id = ?
+    ORDER BY c.data_registro DESC;
   `;
     const [rows] = await conn.query(sql, [livroId]);
     return rows;
@@ -133,8 +134,19 @@ async function atualizaUser(id, nome, email, senha) {
     return await conn.query(sql, [nome, email, senha, id]);
 }
 
+async function adicionaComentario(livroId, mensagem, data_registro) {
+    const conn = await connect();
+    const sqlComentario = "INSERT INTO comentarios(mensagem, data_registro) VALUES (?, ?);";
+    const [resultComentario] = await conn.query(sqlComentario, [mensagem, data_registro]);
+
+    const comentarioId = resultComentario.insertId;
+
+    const sqlLivroComentario = "INSERT INTO livro_comentario(livro_id, comentario_id) VALUES (?, ?);";
+    return await conn.query(sqlLivroComentario, [livroId, comentarioId]);
+}
+
 
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
-    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser, buscaLivrosFavoritos
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser, buscaLivrosFavoritos, adicionaComentario
 };
