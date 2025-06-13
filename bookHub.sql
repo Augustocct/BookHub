@@ -4,11 +4,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   `nome` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `senha` varchar(45) NOT NULL,
-  `user` DATETIME NULL;
+  `data_registro` DATETIME NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-INSERT INTO `user` VALUES (1,'Augusto','augustoconte@gmail.com', 'GutoTeste');
+INSERT INTO `user` VALUES (1,'Augusto','augustoconte@gmail.com', 'GutoTeste', '2025-06-11 19:09:01');
 
 -- Tabela categoria
 CREATE TABLE IF NOT EXISTS `categoria` (
@@ -68,14 +68,6 @@ CREATE TABLE IF NOT EXISTS livro_categoria (
   FOREIGN KEY (categoria_id) REFERENCES categoria(id)
 );
 
--- Relacionamentos
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (1, 1), (1, 2);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 1), (2, 2), (2, 3);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (3, 1);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (4, 2), (4, 3);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 1), (5, 2), (5, 3);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (6, 3);
-
 -- Tabela comentarios
 CREATE TABLE IF NOT EXISTS comentarios (
   id INT NOT NULL AUTO_INCREMENT,
@@ -100,12 +92,6 @@ INSERT INTO comentarios (id, mensagem, data_registro) VALUES
 (3, 'Achei o final surpreendente, não esperava por isso!', '2025-06-11 19:09:01'),
 (4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.', '2025-06-11 19:09:01'),
 (5, 'Um dos melhores livros que já li sobre esse tema.', '2025-06-11 19:09:01');
-
--- Relacionamento entre livros e comentários
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES 
-(1, 1), (1, 2),
-(2, 3), (2, 4),
-(3, 5);
 
 CREATE TABLE livro_favorito (
   user_id INT NOT NULL,
