@@ -68,10 +68,10 @@ router.get('/favoritos', async function (req, res, next) {
   try {
     const userId = req.session.user.id;
     const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
-    res.render('favoritos', { title: 'BookHub', livros: livrosFavoritos, user: req.session.user });
+    res.render('favoritos', { title: 'BookHub', livrosFavoritos, user: req.session.user });
   } catch (error) {
     console.error("Erro ao buscar favoritos:", error);
-    res.render('favoritos', { title: 'BookHub', livros: [], error: error.message, user: req.session.user });
+    res.render('favoritos', { title: 'BookHub', livrosFavoritos: [], error: error.message, user: req.session.user });
   }
 });
 

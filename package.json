@@ -16,5 +16,8 @@
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
     "mysql2": "^3.14.1"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.1.10"
   }
 }
