@@ -28,36 +28,37 @@
                         <div class="col-lg-4 col-md-7 col-sm-6">
                             <h2 class="box-title mt-5 font-weight-bold"><%- livro.titulo %></h2>
                             <h4 class="box-title text-muted mt-1"><%- livro.autor %></h4>
-                            <% if (user) { %>
-                                <button class="btn btn-primary btn-rounded mt-2"
-                                    onclick="window.location.href='/addFavorito?id=<%= livro.id %>'">Adicionar aos
-                                    favoritos</button>
-                                <% } else { %>
+                            <%- include('partials/biStarComponent', { user: user, livro: livro }) %>
+                                <% if (user) { %>
                                     <button class="btn btn-primary btn-rounded mt-2"
-                                        onclick="window.location.href='/login'">Adicionar aos favoritos</button>
-                                    <% } %>
-                                        <% if (user) { %>
-                                            <button class="btn btn-primary btn-rounded mt-2"
-                                                onclick="window.location.href='/leitura?id=<%= livro.id %>'">Ler
-                                                agora</button>
-                                            <% } else { %>
-                                                <button class="btn btn-primary btn-rounded mt-2"
-                                                    onclick="window.location.href='/login'">Ler agora</button>
+                                        onclick="window.location.href='<%= livro.pdf_url %>'">Ler
+                                        agora</button>
+                                    <% } else { %>
+                                        <button class="btn btn-primary btn-rounded mt-2"
+                                            onclick="window.location.href='/login'">Ler agora</button>
+                                        <% } %>
+                                            <% if (categorias && categorias.length> 0) { %>
+                                                <h6 class="box-title text-muted mt-1">
+                                                    <% categorias.forEach(function(cat, idx) { %>
+                                                        <%= cat.nome %>
+                                                            <%= idx < categorias.length - 1 ? ', ' : '' %>
+                                                                <% }); %>
+                                                </h6>
                                                 <% } %>
-                                                    <% if (categorias && categorias.length> 0) { %>
-                                                        <h6 class="box-title text-muted mt-1">
-                                                            <% categorias.forEach(function(cat, idx) { %>
-                                                                <%= cat.nome %>
-                                                                    <%= idx < categorias.length - 1 ? ', ' : '' %>
-                                                                        <% }); %>
-                                                        </h6>
-                                                        <% } %>
-                                                            <div class="text mt-5 w-75">
-                                                                <h4>Descrição</h4>
-                                                                <p class="text-muted "><%- livro.descricao %></p>
-                                                            </div>
-                                                            <div data-coreui-toggle="rating" data-coreui-value="3">
-                                                            </div>
+                                                    <h4>Avaliação</h4>
+                                                    <div id="rating" data-livro-id="<%= livro.id %>">
+                                                        <% for(let i=1; i<=5; i++) { %>
+                                                            <i class="bi <%= i <= livro.avaliacao ? 'bi-star-fill' : 'bi-star' %> text-warning star"
+                                                                data-value="<%= i %>"
+                                                                style="font-size: 2rem; cursor: pointer;"></i>
+                                                            <% } %>
+                                                    </div>
+                                                    <div class="text mt-5 w-75">
+                                                        <h4>Descrição</h4>
+                                                        <p class="text-muted "><%- livro.descricao %></p>
+                                                    </div>
+                                                    <div data-coreui-toggle="rating" data-coreui-value="3">
+                                                    </div>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 rounded" style="background-color: #262626;">
                             <h4 class="mt-5">Comentários Recentes</h4>
@@ -92,6 +93,50 @@
             </div>
         </div>
         </div>
+
+        <script>
+            document.querySelectorAll('.star-btn').forEach(btn => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const livroId = this.getAttribute('data-livro-id');
+                    fetch(`/addFavorito?id=${livroId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            window.location.reload();
+                        })
+                        .catch(err => {
+                            alert('Erro ao favoritar: ' + err);
+                        });
+                });
+            });
+
+            document.querySelectorAll('#rating .star').forEach(star => {
+                star.addEventListener('click', function () {
+                    const value = this.getAttribute('data-value');
+                    const livroId = document.getElementById('rating').getAttribute('data-livro-id');
+                    fetch(`/avaliar?id=${livroId}&nota=${value}`, {
+                        method: 'POST'
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.sucesso) {
+                                // Atualiza as estrelas visualmente
+                                document.querySelectorAll('#rating .star').forEach((s, idx) => {
+                                    if (idx < value) {
+                                        s.classList.remove('bi-star');
+                                        s.classList.add('bi-star-fill');
+                                    } else {
+                                        s.classList.remove('bi-star-fill');
+                                        s.classList.add('bi-star');
+                                    }
+                                });
+                            } else {
+                                alert('Erro ao avaliar: ' + (data.error || 'Tente novamente'));
+                            }
+                        });
+                });
+            });
+        </script>
 </body>
 
 </html>

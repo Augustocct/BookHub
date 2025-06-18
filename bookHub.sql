@@ -24,13 +24,15 @@ CREATE TABLE IF NOT EXISTS `livro` (
   `autor` VARCHAR(45) NOT NULL,
   `descricao` VARCHAR(255) NULL,
   `capa_url` VARCHAR(100) NULL,
+  `pdf_url` VARCHAR(100) NULL,
+  `avaliacao`INT(5) NULL,
   PRIMARY KEY (`id`)
 );
 
 INSERT INTO `livro` VALUES 
 (1,'1984','George Orwell', 'Livro futurista utopico', '/images/1984.jpg'),
 (2, 'O Hobbit', 'J.R.R. Tolkien', 'Aventura fantástica na Terra Média', '/images/hobbit.jpg'),
-(3, 'Harry Potter e a Pedra Filosofal', 'J.K. Rowling', 'O início da saga do bruxo Harry Potter', '/images/hp.jpg'),
+(3, 'Harry Potter e a Pedra Filosofal', 'J.K. Rowling', 'O início da saga do bruxo Harry Potter', '/images/hp.jpg', '/images/hpSecreta.pdf'),
 (4, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg'),
 (5, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg'),
 (6, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg');

@@ -128,6 +128,19 @@ async function adicionaFavorito(userId, livroId) {
     return await conn.query(sql, [userId, livroId]);
 }
 
+async function removeFavorito(userId, livroId) {
+    const conn = await connect();
+    const sql = "DELETE FROM livro_favorito WHERE user_id = ? AND livro_id = ?;";
+    return await conn.query(sql, [userId, livroId]);
+}
+
+async function existeFavorito(userId, livroId) {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro_favorito WHERE user_id = ? AND livro_id = ?;";
+    const [rows] = await conn.query(sql, [userId, livroId]);
+    return rows.length > 0;
+}
+
 async function atualizaUser(id, nome, email, senha) {
     const conn = await connect();
     const sql = "UPDATE user SET nome = ?, email = ?, senha = ? WHERE id = ?;";
@@ -145,8 +158,13 @@ async function adicionaComentario(livroId, mensagem, data_registro) {
     return await conn.query(sqlLivroComentario, [livroId, comentarioId]);
 }
 
-
+async function atualizaNota(id, nota) {
+    const conn = await connect();
+    const sql = "UPDATE livro SET avaliacao = ? WHERE id = ?;";
+    return await conn.query(sql, [nota, id]);
+}
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
-    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser, buscaLivrosFavoritos, adicionaComentario
+    buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
+    buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota
 };

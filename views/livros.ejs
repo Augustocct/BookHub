@@ -44,9 +44,34 @@
     <div class="container d-flex justify-content-center mt-3">
       <div class="row justify-content-center" style="max-width: 500px;">
         <% livros.slice(0, 4).forEach(livro=> { %>
-          <div class="col-md-6 d-flex justify-content-center mb-2">
-            <a href="/descricao?id=<%= livro.id %>"><img src="<%= livro.capa_url %>" class="borda mx-1"
-                alt="<%= livro.titulo %>" width="auto" style="height: 250px; width: 170px; object-fit: cover;"></a>
+          <div class="col-md-6 d-flex flex-column align-items-center mb-2">
+            <a href="/descricao?id=<%= livro.id %>">
+              <img src="<%= livro.capa_url %>" class="borda mx-1" alt="<%= livro.titulo %>" width="auto"
+                style="height: 250px; width: 170px; object-fit: cover;">
+            </a>
+            <div class="d-flex justify-content-between w-75">
+              <% if (user) { %>
+                <button class="btn btn-link p-0 star-btn mt-2" data-livro-id="<%= livro.id %>">
+                  <% if (livro.favorito) { %>
+                    <i class="bi bi-star-fill"></i>
+                    <% } else { %>
+                      <i class="bi bi-star"></i>
+                      <% } %>
+                </button>
+                <% } else { %>
+                  <button class="btn btn-link p-0 mt-2" onclick="window.location.href='/login'">
+                    <i class="bi bi-star"></i>
+                  </button>
+                  <% } %>
+                    <% if (user) { %>
+                      <button class="btn btn-primary btn-rounded mt-2"
+                        onclick="window.location.href='<%= livro.pdf_url %>'">Ler
+                        agora</button>
+                      <% } else { %>
+                        <button class="btn btn-primary btn-rounded mt-2" onclick="window.location.href='/login'">Ler
+                          agora</button>
+                        <% } %>
+            </div>
           </div>
           <% }); %>
       </div>
@@ -65,7 +90,22 @@
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-
+        <script>
+          document.querySelectorAll('.star-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+              e.preventDefault();
+              const livroId = this.getAttribute('data-livro-id');
+              fetch(`/addFavorito?id=${livroId}`)
+                .then(res => res.json())
+                .then(data => {
+                  window.location.reload();
+                })
+                .catch(err => {
+                  alert('Erro ao favoritar: ' + err);
+                });
+            });
+          });
+        </script>
 </body>
 
 </html>

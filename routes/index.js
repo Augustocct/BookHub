@@ -39,6 +39,11 @@ router.get('/descricao', async function (req, res, next) {
     const livro = await db.buscaLivroPorId(id);
     const categorias = await db.buscaCategoriasPorLivroId(id);
     const comentarios = await db.buscaComentarioPorLivroId(id);
+    let favorito = false;
+    if (req.session.user) {
+      favorito = await db.existeFavorito(req.session.user.id, id);
+    }
+    livro.favorito = favorito;
     res.render('descricao', { title: 'BookHub', livro, categorias, user: req.session.user, comentarios });
   } catch (error) {
     res.render('descricao', { title: 'BookHub', livro: null, categorias: [], comentarios: [], error: error.message });
@@ -55,14 +60,37 @@ router.get('/addFavorito', async function (req, res, next) {
       return res.redirect('/?error=Livro%20não%20encontrado');
     }
 
-    await db.adicionaFavorito(userId, livroId);
-    res.redirect(`/descricao?id=${livroId}`);
+    const favoritoExiste = await db.existeFavorito(userId, livroId);
+
+    let favorito;
+    if (favoritoExiste) {
+      await db.removeFavorito(userId, livroId);
+      favorito = false;
+    } else {
+      await db.adicionaFavorito(userId, livroId);
+      favorito = true;
+    }
+    res.json({ favorito });
+
   } catch (error) {
     console.error("Erro ao adicionar favorito:", error);
-    res.redirect('/?error=' + encodeURIComponent(error.message));
+    res.status(500).json({ error: 'Erro ao alternar favorito' });
   }
 }
 );
+
+router.post('/avaliar', async function (req, res) {
+  const id = req.query.id;
+  const nota = parseInt(req.query.nota, 10);
+
+  try {
+    // Salve a avaliação do usuário no banco (crie ou atualize)
+    await db.atualizaNota(id, nota);
+    res.json({ sucesso: true });
+  } catch (error) {
+    res.status(500).json({ sucesso: false, error: 'Erro ao salvar avaliação' });
+  }
+});
 
 router.get('/favoritos', async function (req, res, next) {
   try {
@@ -88,6 +116,17 @@ router.get('/livros', async function (req, res, next) {
     } else {
       livros = await db.buscaLivros();
     }
+
+    // --- ADICIONE ESTE BLOCO ---
+    let favoritosIds = [];
+    if (req.session.user) {
+      const favoritos = await db.buscaLivrosFavoritos(req.session.user.id);
+      favoritosIds = favoritos.map(fav => fav.id); // ou fav.livro_id, conforme seu retorno
+    }
+    livros = livros.map(livro => ({
+      ...livro,
+      favorito: favoritosIds.includes(livro.id)
+    }));
 
     console.log(categorias); // Veja o que está vindo do banco
     res.render('livros', { title: 'BookHub', categorias, livros, user: req.session.user, query: inputBusca });
