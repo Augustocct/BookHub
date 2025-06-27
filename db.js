@@ -40,6 +40,20 @@ async function buscaUser(usuario) {
     return rows[0];
 }
 
+async function buscaUsuarios() {
+    const conn = await connect();
+    const sql = "SELECT * FROM user;";
+    const [rows] = await conn.query(sql);
+    return rows;
+}
+
+async function buscaComentarios() {
+    const conn = await connect();
+    const sql = "SELECT * FROM comentarios;";
+    const [rows] = await conn.query(sql);
+    return rows;
+}
+
 async function buscaUserPorId(userId) {
     const conn = await connect();
     const sql = "SELECT * FROM user WHERE id = ?;";
@@ -163,8 +177,36 @@ async function atualizaNota(id, nota) {
     const sql = "UPDATE livro SET avaliacao = ? WHERE id = ?;";
     return await conn.query(sql, [nota, id]);
 }
+
+// ADMIN
+
+async function buscarAdmin(admemail, admsenha) {
+    const conn = await connect();
+    const sql = "SELECT * FROM admin WHERE admemail = ? AND admsenha = ?";
+    const [rows] = await conn.query(sql, [admemail, admsenha]);
+
+    if (rows.length === 0) {
+        throw new Error("Admin não encontrado");
+    }
+
+    return rows[0];
+}
+
+async function atualizaLivro(id, titulo, pdf_url, descricao, capa_url) {
+    const conn = await connect();
+    const sql = "UPDATE livro SET titulo = ?, pdf_url = ?, descricao = ?, capa_url = ? WHERE id = ?;";
+    return await conn.query(sql, [titulo, pdf_url, descricao, capa_url, id]);
+}
+
+async function excluiLivro(id) {
+    const conn = await connect();
+    const sql = "DELETE FROM livro WHERE id = ?;";
+    return await conn.query(sql, [id]);
+}
+
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
     buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
-    buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota
+    buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota, buscarAdmin, buscaUsuarios, buscaComentarios,
+    atualizaLivro, excluiLivro
 };

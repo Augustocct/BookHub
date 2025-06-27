@@ -131,4 +131,19 @@ INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 2);
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 3);
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 4);
 INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (3, 5);
-  
+
+
+CREATE TABLE admin (
+	id int(11) auto_increment NOT NULL,
+	admemail varchar(100) NOT NULL,
+	admsenha varchar(100) NOT NULL,
+	admnome varchar(100) NOT NULL,
+	CONSTRAINT admin_pk PRIMARY KEY (id)
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO admin
+(id, admemail, admsenha, admnome)
+VALUES(0, 'admTeste@gmail.com', 'admSenha', 'Adm Augusto');
