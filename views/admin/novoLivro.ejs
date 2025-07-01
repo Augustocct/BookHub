@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= title %>
+    </title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+
+<body class="min-h-screen" style="background-color: #2C2C2C; color: white;">
+    <nav class="bg-gray-800 shadow-lg w-full">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <%- include('partials/navbarAdmComponent', { admin: admin }) %>
+                    <div class="flex items-center">
+                        <span class="text-gray-300 text-sm font-medium">
+                            <%= admin.admnome %>
+                        </span>
+                    </div>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="container">
+            <div class="row gutters">
+                <div class="col-xl-12">
+                    <div class="card h-100" style="background-color: #1E1E1E;">
+                        <div class="card-body">
+                            <form class="w-100" style="background-color: #1E1E1E;" action="/admin/criaLivro"
+                                method="POST">
+                                <h6 class="mb-2 text-primary">Novo Livro</h6>
+                                <div class="form-group">
+                                    <label for="titulo">Titulo</label>
+                                    <input type="text" class="form-control" name="titulo" placeholder="Digite o título"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao">Autor</label>
+                                    <input type="text" class="form-control" name="autor"
+                                        placeholder="Digite o nome do autor" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="descricao">Descrição</label>
+                                    <textarea class="form-control" name="descricao" placeholder="Digite a descrição"
+                                        rows="4" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="capa_url">Capa URL</label>
+                                    <input type="text" class="form-control" name="capa_url" placeholder="URL da capa"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pdf_url">PDF URL</label>
+                                    <input type="text" class="form-control" name="pdf_url" placeholder="URL do PDF"
+                                        required>
+                                </div>
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="window.location.href='/admin/admLivros'">Cancelar</button>
+                                    <button type="submit" class="btn btn-success">Criar Livro</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

@@ -204,9 +204,15 @@ async function excluiLivro(id) {
     return await conn.query(sql, [id]);
 }
 
+async function criaLivro(titulo, autor, pdf_url, descricao, capa_url) {
+    const conn = await connect();
+    const sql = "INSERT INTO livro(titulo, autor, pdf_url, descricao, capa_url) VALUES (?, ?, ?, ?, ?);";
+    return await conn.query(sql, [titulo, autor, pdf_url, descricao, capa_url]);
+}
+
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
     buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
     buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota, buscarAdmin, buscaUsuarios, buscaComentarios,
-    atualizaLivro, excluiLivro
+    atualizaLivro, excluiLivro, criaLivro
 };

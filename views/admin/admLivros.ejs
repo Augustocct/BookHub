@@ -32,7 +32,9 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="bg-gray-800 p-8 rounded-lg shadow-lg text-gray-300">
-            <div class="row flex">
+            <a class="btn btn-outline-primary my-2 my-sm-0" href="/admin/novoLivro">Novo livro</a>
+            <a class="btn btn-outline-primary my-2 my-sm-0" href="/admin/novoLivro">Nova categoria</a>
+            <div class="row flex mt-3">
                 <% livros.forEach(livro=> { %>
                     <div class="col-lg-4 col-sm-6">
                         <div class="thumbnail mb-4 d-flex justify-content-center">
@@ -41,6 +43,9 @@
                                     width="auto" style="height: 250px; width: 170px; object-fit: cover;">
                             </a>
                         </div>
+                        <p class="text-center text-gray-200 font-semibold">
+                            <%= livro.titulo %>
+                        </p>
                     </div>
                     <% }); %>
             </div>

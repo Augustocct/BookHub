@@ -66,6 +66,29 @@ router.post('/atualizaLivro', verificaLogin, async function (req, res, next) {
   }
 });
 
+router.get('/novoLivro', verificaLogin, function (req, res, next) {
+  res.render('admin/novoLivro', {
+    title: 'BookHub',
+    admin: req.session.admin,
+  });
+});
+
+router.post('/criaLivro', verificaLogin, async function (req, res, next) {
+  const titulo = req.body.titulo;
+  const autor = req.body.autor;
+  const descricao = req.body.descricao;
+  const capa_url = req.body.capa_url;
+  const pdf_url = req.body.pdf_url;
+
+  try {
+    await db.criaLivro(titulo, autor, pdf_url, descricao, capa_url);
+    res.redirect('/admin/admLivros');
+  } catch (error) {
+    console.error("Erro ao criar livro:", error);
+    res.redirect('/admin/novoLivro?error=' + encodeURIComponent(error.message));
+  }
+});
+
 router.post('/excluiLivro', verificaLogin, async function (req, res, next) {
   const livroId = req.query.id;
   try {
