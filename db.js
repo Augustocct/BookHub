@@ -243,9 +243,15 @@ async function excluiCategoria(id) {
     return await conn.query(sql, [id]);
 }
 
+async function atualizaStatusUsuario(id, status) {
+    const conn = await connect();
+    const sql = "UPDATE user SET status = ? WHERE id = ?;";
+    return await conn.query(sql, [status, id]);
+}
+
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
     buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
     buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota, buscarAdmin, buscaUsuarios, buscaComentarios,
-    atualizaLivro, excluiLivro, criaLivro, criaCategoria, buscaCategoriaPorId, editarCategoriaPorId, excluiCategoria
+    atualizaLivro, excluiLivro, criaLivro, criaCategoria, buscaCategoriaPorId, editarCategoriaPorId, excluiCategoria, atualizaStatusUsuario
 };

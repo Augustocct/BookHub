@@ -188,6 +188,28 @@ router.post('/login', async function (req, res, next) {
   }
 });
 
+router.get('/admUser', verificaLogin, async function (req, res, next) {
+  const usuarios = await db.buscaUsuarios();
+  res.render('admin/admUser', {
+    title: 'BookHub',
+    admin: req.session.admin,
+    usuarios: usuarios || [],
+  });
+});
+
+// Atualiza status do usuário
+router.post('/atualizaStatusUsuario', verificaLogin, async function (req, res, next) {
+  const usuarioId = req.body.usuarioId; // Corrigido para pegar o campo correto do form
+  const status = req.body.status;
+  try {
+    await db.atualizaStatusUsuario(usuarioId, status);
+    res.redirect('/admin/admUser?atualizado=true');
+  } catch (error) {
+    console.error('Erro ao atualizar status do usuário:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 function verificaLogin(req, res, next) {
   if (req.session && req.session.admin) {
     next();

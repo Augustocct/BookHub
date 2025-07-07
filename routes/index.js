@@ -216,8 +216,18 @@ router.post("/logar", async function (req, res) {
   try {
     const user = await db.buscaUser({ email, senha });
     if (user) {
-      req.session.user = user; // Armazena o usuário na sessão
-      res.redirect('/'); // Redireciona para a página inicial ou outra página
+      if (user.status === 'bloqueado') {
+        res.redirect('/login?error=Usuário%20bloqueado');
+        return;
+      }
+      // Se for ativo, permite login
+      if (user.status === 'ativo') {
+        req.session.user = user;
+        res.redirect('/');
+        return;
+      }
+      // Caso status desconhecido
+      res.redirect('/login?error=Status%20de%20usuário%20inválido');
     } else {
       res.redirect('/login?error=Usuário%20ou%20senha%20inválidos');
     }
