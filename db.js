@@ -17,12 +17,9 @@ async function connect() {
 connect();
 
 async function registraUser(user) {
-
     const conn = await connect();
-
-    const sql = "INSERT INTO user(nome, email, senha, data_registro) VALUES (?,?,?,?);"
-
-    return await conn.query(sql, [user.nome, user.email, user.senha, user.data_registro]);
+    const sql = "INSERT INTO user(nome, email, senha, data_registro, status) VALUES (?,?,?,?,?);"
+    return await conn.query(sql, [user.nome, user.email, user.senha, user.data_registro, 'ativo']);
 }
 
 async function buscaUser(usuario) {
@@ -38,6 +35,41 @@ async function buscaUser(usuario) {
     }
 
     return rows[0];
+}
+
+// Promove usuário para admin
+async function promoverUser(usuarioId) {
+    const conn = await connect();
+    // Busca dados do usuário
+    const [rows] = await conn.query("SELECT * FROM user WHERE id = ?;", [usuarioId]);
+    if (rows.length === 0) throw new Error("Usuário não encontrado");
+    const user = rows[0];
+    // Verifica se já é admin
+    const [adminRows] = await conn.query("SELECT * FROM admin WHERE admemail = ?;", [user.email]);
+    if (adminRows.length > 0) throw new Error("Usuário já é administrador");
+    // Insere na tabela admin (ajuste os campos conforme sua tabela admin)
+    await conn.query("INSERT INTO admin (admnome, admemail, admsenha) VALUES (?, ?, ?);", [user.nome, user.email, user.senha]);
+    return true;
+}
+
+// Busca todos os admins
+async function buscaAdmins() {
+    const conn = await connect();
+    const sql = "SELECT * FROM admin;";
+    const [rows] = await conn.query(sql);
+    return rows;
+}
+
+// Remove permissão de admin (pelo email do user)
+async function removerAdmin(usuarioId) {
+    const conn = await connect();
+    // Busca email do usuário
+    const [rows] = await conn.query("SELECT email FROM user WHERE id = ?;", [usuarioId]);
+    if (rows.length === 0) throw new Error("Usuário não encontrado");
+    const email = rows[0].email;
+    // Remove da tabela admin
+    await conn.query("DELETE FROM admin WHERE admemail = ?;", [email]);
+    return true;
 }
 
 async function buscaUsuarios() {
@@ -155,6 +187,69 @@ async function existeFavorito(userId, livroId) {
     return rows.length > 0;
 }
 
+async function existeLivroLido(userId, livroId) {
+    const conn = await connect();
+    const sql = "SELECT * FROM livro_lido WHERE user_id = ? AND livro_id = ?;";
+    const [rows] = await conn.query(sql, [userId, livroId]);
+    return rows.length > 0;
+}
+
+// Marca livro como lido (status 'lido', percentual 100)
+async function adicionaLivroLido(userId, livroId) {
+    const conn = await connect();
+    // Se já existe registro, atualiza status e percentual
+    const [rows] = await conn.query("SELECT * FROM livro_lido WHERE user_id = ? AND livro_id = ?", [userId, livroId]);
+    if (rows.length > 0) {
+        const sql = "UPDATE livro_lido SET status = 'lido', percentual = 100, data_leitura = NOW() WHERE user_id = ? AND livro_id = ?;";
+        return await conn.query(sql, [userId, livroId]);
+    } else {
+        const sql = "INSERT INTO livro_lido(user_id, livro_id, status, percentual, data_leitura) VALUES (?, ?, 'lido', 100, NOW());";
+        return await conn.query(sql, [userId, livroId]);
+    }
+}
+
+// Marca livro como em andamento (status 'andamento', percentual customizado)
+async function adicionaLivroEmAndamento(userId, livroId, percentual) {
+    const conn = await connect();
+    // Se já existe registro, atualiza status e percentual
+    const [rows] = await conn.query("SELECT * FROM livro_lido WHERE user_id = ? AND livro_id = ?", [userId, livroId]);
+    if (rows.length > 0) {
+        const sql = "UPDATE livro_lido SET status = 'andamento', percentual = ?, data_leitura = NOW() WHERE user_id = ? AND livro_id = ?;";
+        return await conn.query(sql, [percentual, userId, livroId]);
+    } else {
+        const sql = "INSERT INTO livro_lido(user_id, livro_id, status, percentual, data_leitura) VALUES (?, ?, 'andamento', ?, NOW());";
+        return await conn.query(sql, [userId, livroId, percentual]);
+    }
+}
+
+// Atualiza apenas o percentual de leitura (mantém status 'andamento')
+async function atualizaPercentualLeitura(userId, livroId, percentual) {
+    const conn = await connect();
+    const sql = "UPDATE livro_lido SET percentual = ?, status = IF(? = 100, 'lido', 'andamento'), data_leitura = NOW() WHERE user_id = ? AND livro_id = ?;";
+    return await conn.query(sql, [percentual, percentual, userId, livroId]);
+}
+async function removeLivroLido(userId, livroId) {
+    const conn = await connect();
+    const sql = "DELETE FROM livro_lido WHERE user_id = ? AND livro_id = ?;";
+    return await conn.query(sql, [userId, livroId]);
+}
+
+// Busca livros lidos ou em andamento, com filtro de status e percentual
+async function buscaLivrosLidos(userId, filtroStatus = 'todos') {
+    const conn = await connect();
+    let sql = `SELECT l.*, ll.status, ll.percentual FROM livro l 
+        JOIN livro_lido ll ON ll.livro_id = l.id 
+        WHERE ll.user_id = ?`;
+    let params = [userId];
+    if (filtroStatus === 'lido' || filtroStatus === 'andamento') {
+        sql += ' AND ll.status = ?';
+        params.push(filtroStatus);
+    }
+    sql += ' ORDER BY ll.data_leitura DESC';
+    const [rows] = await conn.query(sql, params);
+    return rows;
+}
+
 async function atualizaUser(id, nome, email, senha) {
     const conn = await connect();
     const sql = "UPDATE user SET nome = ?, email = ?, senha = ? WHERE id = ?;";
@@ -253,5 +348,7 @@ module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
     buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
     buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota, buscarAdmin, buscaUsuarios, buscaComentarios,
-    atualizaLivro, excluiLivro, criaLivro, criaCategoria, buscaCategoriaPorId, editarCategoriaPorId, excluiCategoria, atualizaStatusUsuario
+    atualizaLivro, excluiLivro, criaLivro, criaCategoria, buscaCategoriaPorId, editarCategoriaPorId, excluiCategoria, atualizaStatusUsuario,
+    promoverUser, buscaAdmins, removerAdmin, existeLivroLido, adicionaLivroLido, removeLivroLido, buscaLivrosLidos, adicionaLivroEmAndamento,
+    atualizaPercentualLeitura, adicionaLivroLido, adicionaLivroEmAndamento
 };

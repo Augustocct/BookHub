@@ -26,6 +26,13 @@
                                         <%= title %>
                                     </h1>
                                     </p>
+
+                                    <% if (typeof error !== 'undefined' && error) { %>
+                                        <div class="alert alert-danger text-center" role="alert">
+                                            <%= error %>
+                                        </div>
+                                    <% } %>
+
                                     <form action="/admin/login" method="POST">
 
                                         <div class="d-flex flex-row align-items-center mb-4">

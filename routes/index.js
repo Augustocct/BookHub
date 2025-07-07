@@ -40,13 +40,29 @@ router.get('/descricao', async function (req, res, next) {
     const categorias = await db.buscaCategoriasPorLivroId(id);
     const comentarios = await db.buscaComentarioPorLivroId(id);
     let favorito = false;
+    let lido = false;
     if (req.session.user) {
       favorito = await db.existeFavorito(req.session.user.id, id);
+      lido = await db.existeLivroLido(req.session.user.id, id);
     }
     livro.favorito = favorito;
+    livro.lido = lido;
     res.render('descricao', { title: 'BookHub', livro, categorias, user: req.session.user, comentarios });
   } catch (error) {
     res.render('descricao', { title: 'BookHub', livro: null, categorias: [], comentarios: [], error: error.message });
+  }
+});
+
+// Histórico de leitura com filtro por status
+router.get('/historico', verificaLogin, async function (req, res, next) {
+  try {
+    const userId = req.session.user.id;
+    const filtroStatus = req.query.status || 'todos'; // lido | andamento | todos
+    let livrosLidos = await db.buscaLivrosLidos(userId, filtroStatus);
+    res.render('historico', { title: 'BookHub', livrosLidos, user: req.session.user, filtroStatus });
+  } catch (error) {
+    console.error("Erro ao buscar histórico:", error);
+    res.render('historico', { title: 'BookHub', livrosLidos: [], error: error.message, user: req.session.user, filtroStatus: req.query.status || 'todos' });
   }
 });
 
@@ -143,7 +159,8 @@ router.get('/perfil', verificaLogin, async function (req, res, next) {
       return res.redirect('/?error=Usuário%20não%20encontrado');
     }
     const livrosFavoritos = await db.buscaLivrosFavoritos(userId);
-    res.render('perfil', { title: 'BookHub', user: req.session.user, livros: livrosFavoritos, query: req.query });
+    const livrosLidos = await db.buscaLivrosLidos(userId); // Busca livros lidos
+    res.render('perfil', { title: 'BookHub', user: req.session.user, livros: livrosFavoritos, livrosLidos: livrosLidos, query: req.query });
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);
     res.render('perfil', { title: 'BookHub', user: req.session.user, livrosFavoritos: [], error: error.message });
@@ -208,6 +225,39 @@ router.post('/comentar', verificaLogin, async function (req, res) {
   }
 }
 );
+
+// Marcar/desmarcar livro como lido, andamento ou atualizar percentual
+router.post('/marcarLido', verificaLogin, async function (req, res) {
+  const livroId = req.body.livroId;
+  const userId = req.session.user.id;
+  const acao = req.body.acao;
+  const percentual = parseInt(req.body.percentual, 10);
+
+  try {
+    if (acao === 'lido') {
+      await db.adicionaLivroLido(userId, livroId);
+      res.redirect(`/descricao?id=${livroId}&lido=true`);
+    } else if (acao === 'andamento') {
+      // Percentual entre 1 e 99
+      const perc = percentual && percentual > 0 && percentual < 100 ? percentual : 10;
+      await db.adicionaLivroEmAndamento(userId, livroId, perc);
+      res.redirect(`/descricao?id=${livroId}&status=andamento&percentual=${perc}`);
+    } else if (acao === 'atualizar_percentual') {
+      // Atualiza percentual, se 100 vira lido
+      const perc = percentual && percentual > 0 && percentual <= 100 ? percentual : 10;
+      await db.atualizaPercentualLeitura(userId, livroId, perc);
+      res.redirect(`/descricao?id=${livroId}&status=${perc === 100 ? 'lido' : 'andamento'}&percentual=${perc}`);
+    } else if (acao === 'desmarcar') {
+      await db.removeLivroLido(userId, livroId);
+      res.redirect(`/descricao?id=${livroId}&lido=false`);
+    } else {
+      res.redirect(`/descricao?id=${livroId}&error=Ação%20inválida`);
+    }
+  } catch (error) {
+    console.error("Erro ao marcar livro como lido/andamento:", error);
+    res.redirect(`/descricao?id=${livroId}&error=` + encodeURIComponent(error.message));
+  }
+});
 
 router.post("/logar", async function (req, res) {
   const email = req.body.email;

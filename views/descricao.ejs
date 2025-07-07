@@ -46,19 +46,105 @@
                                                 </h6>
                                                 <% } %>
                                                     <h4>Avaliação</h4>
-                                                    <div id="rating" data-livro-id="<%= livro.id %>">
-                                                        <% for(let i=1; i<=5; i++) { %>
-                                                            <i class="bi <%= i <= livro.avaliacao ? 'bi-star-fill' : 'bi-star' %> text-warning star"
-                                                                data-value="<%= i %>"
-                                                                style="font-size: 2rem; cursor: pointer;"></i>
+                                                    <% if (user) { %>
+                                                        <div id="rating" data-livro-id="<%= livro.id %>">
+                                                            <% for(let i=1; i<=5; i++) { %>
+                                                                <i class="bi <%= i <= livro.avaliacao ? 'bi-star-fill' : 'bi-star' %> text-warning star"
+                                                                    data-value="<%= i %>"
+                                                                    style="font-size: 2rem; cursor: pointer;"></i>
+                                                                <% } %>
+                                                        </div>
+                                                        <% } else { %>
+                                                            <div id="rating" data-livro-id="<%= livro.id %>">
+                                                                <% for(let i=1; i<=5; i++) { %>
+                                                                    <i class="bi bi-star text-warning"
+                                                                        style="font-size: 2rem; opacity: 0.5;"></i>
+                                                                    <% } %>
+                                                            </div>
                                                             <% } %>
-                                                    </div>
-                                                    <div class="text mt-5 w-75">
-                                                        <h4>Descrição</h4>
-                                                        <p class="text-muted "><%- livro.descricao %></p>
-                                                    </div>
-                                                    <div data-coreui-toggle="rating" data-coreui-value="3">
-                                                    </div>
+                                                                <% if (user) { %>
+                                                                    <% if (!livro.lido && livro.status !=='lido' ) { %>
+                                                                        <form action="/marcarLido" method="POST"
+                                                                            class="mb-2">
+                                                                            <input type="hidden" name="livroId"
+                                                                                value="<%= livro.id %>">
+                                                                            <input type="hidden" name="acao"
+                                                                                value="lido">
+                                                                            <button type="submit"
+                                                                                class="btn btn-success">Marcar como
+                                                                                lido</button>
+                                                                        </form>
+                                                                        <form action="/marcarLido" method="POST"
+                                                                            class="mb-2 d-flex align-items-center">
+                                                                            <input type="hidden" name="livroId"
+                                                                                value="<%= livro.id %>">
+                                                                            <input type="hidden" name="acao"
+                                                                                value="andamento">
+                                                                            <input type="number" name="percentual"
+                                                                                min="1" max="99"
+                                                                                value="<%= livro.percentual || 10 %>"
+                                                                                class="form-control mr-2"
+                                                                                style="width: 90px; display: inline-block;">
+                                                                            <button type="submit"
+                                                                                class="btn btn-info">Marcar como em
+                                                                                andamento</button>
+                                                                        </form>
+                                                                        <% } else if (livro.status==='andamento' ||
+                                                                            (livro.lido && livro.percentual < 100)) { %>
+                                                                            <div class="mb-2">
+                                                                                <form action="/marcarLido" method="POST"
+                                                                                    class="d-flex align-items-center">
+                                                                                    <input type="hidden" name="livroId"
+                                                                                        value="<%= livro.id %>">
+                                                                                    <input type="hidden" name="acao"
+                                                                                        value="atualizar_percentual">
+                                                                                    <input type="number"
+                                                                                        name="percentual" min="1"
+                                                                                        max="99"
+                                                                                        value="<%= livro.percentual || 10 %>"
+                                                                                        class="form-control mr-2"
+                                                                                        style="width: 90px; display: inline-block;">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-info">Atualizar
+                                                                                        andamento</button>
+                                                                                </form>
+                                                                                <form action="/marcarLido" method="POST"
+                                                                                    class="mt-2">
+                                                                                    <input type="hidden" name="livroId"
+                                                                                        value="<%= livro.id %>">
+                                                                                    <input type="hidden" name="acao"
+                                                                                        value="lido">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-success">Concluir
+                                                                                        leitura</button>
+                                                                                </form>
+                                                                            </div>
+                                                                            <div class="text-muted">Progresso atual: <%=
+                                                                                    livro.percentual || 0 %>%</div>
+                                                                            <% } else if (livro.lido ||
+                                                                                livro.status==='lido' ||
+                                                                                livro.percentual===100) { %>
+                                                                                <form action="/marcarLido"
+                                                                                    method="POST">
+                                                                                    <input type="hidden" name="livroId"
+                                                                                        value="<%= livro.id %>">
+                                                                                    <input type="hidden" name="acao"
+                                                                                        value="desmarcar">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-warning">Desmarcar
+                                                                                        como lido</button>
+                                                                                </form>
+                                                                                <% } %>
+                                                                                    <% } %>
+                                                                                        <div class="text mt-5 w-75">
+                                                                                            <h4>Descrição</h4>
+                                                                                            <p class="text-muted "><%-
+                                                                                                    livro.descricao %>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                        <div data-coreui-toggle="rating"
+                                                                                            data-coreui-value="3">
+                                                                                        </div>
                         </div>
                         <div class="col-lg-3 col-md-12 col-sm-12 rounded" style="background-color: #262626;">
                             <h4 class="mt-5">Comentários Recentes</h4>

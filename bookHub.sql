@@ -1,56 +1,26 @@
--- Tabela user
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE DATABASE IF NOT EXISTS bookhub;
+USE bookhub;
+
+CREATE TABLE `user` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nome` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
+  `senha` varchar(45) COLLATE utf8mb4_general_ci NOT NULL,
+  `status` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `data_registro` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `user`
+(id, nome, email, senha, status, data_registro)
+VALUES(1, 'Augusto', 'augustoconte@gmail.com', '12345678', 'ativo', '2025-06-11 19:09:01');
+
+CREATE TABLE `categoria` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
-  `senha` varchar(45) NOT NULL,
-  `data_registro` DATETIME NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `user` VALUES (1,'Augusto','augustoconte@gmail.com', 'GutoTeste', '2025-06-11 19:09:01');
-
--- Tabela categoria
-CREATE TABLE IF NOT EXISTS `categoria` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `nome` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`)
-);
-
--- Tabela livro
-CREATE TABLE IF NOT EXISTS `livro` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `titulo` VARCHAR(45) NOT NULL,
-  `autor` VARCHAR(45) NOT NULL,
-  `descricao` VARCHAR(255) NULL,
-  `capa_url` VARCHAR(100) NULL,
-  `pdf_url` VARCHAR(100) NULL,
-  `avaliacao`INT(5) NULL,
-  PRIMARY KEY (`id`)
-);
-
-INSERT INTO `livro` VALUES 
-(1,'1984','George Orwell', 'Livro futurista utopico', '/images/1984.jpg'),
-(2, 'O Hobbit', 'J.R.R. Tolkien', 'Aventura fantástica na Terra Média', '/images/hobbit.jpg'),
-(3, 'Harry Potter e a Pedra Filosofal', 'J.K. Rowling', 'O início da saga do bruxo Harry Potter', '/images/hp.jpg', '/images/hpSecreta.pdf'),
-(4, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg'),
-(5, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg'),
-(6, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg');
-
--- Atualizações nas descrições
-UPDATE livro SET descricao = 'Em um futuro distópico, o governo totalitário controla todos os aspectos da vida. Winston Smith desafia o sistema em busca de liberdade e verdade, enfrentando vigilância constante e manipulação da realidade.' WHERE id = 1;
-
-UPDATE livro SET descricao = 'Bilbo Bolseiro embarca em uma jornada inesperada com um grupo de anões para recuperar um tesouro guardado por um dragão. Pelo caminho, enfrenta perigos, descobre coragem e encontra o Um Anel.' WHERE id = 2;
-
-UPDATE livro SET descricao = 'Harry Potter descobre aos 11 anos que é um bruxo e vai estudar em Hogwarts. Lá, faz amigos, enfrenta desafios mágicos e começa a desvendar o mistério de sua origem e do vilão Voldemort.' WHERE id = 3;
-
-UPDATE livro SET descricao = 'Os X-Men precisam impedir um futuro apocalíptico onde mutantes são caçados por Sentinelas. A história alterna entre passado e futuro, mostrando sacrifícios e batalhas para mudar o destino da humanidade.' WHERE id = 4;
-
-UPDATE livro SET descricao = 'Os X-Men enfrentam um cenário sombrio em que a sobrevivência dos mutantes está ameaçada. Viagens no tempo e decisões difíceis marcam essa saga clássica dos quadrinhos.' WHERE id = 5;
-
-UPDATE livro SET descricao = 'Em uma das histórias mais marcantes dos X-Men, os heróis lutam para evitar um futuro devastador, onde a intolerância levou à quase extinção dos mutantes.' WHERE id = 6;
-
--- Inserção de categorias
 INSERT INTO `categoria` VALUES 
 (1,'Fantasia'),
 (2,'Aventura'),
@@ -61,33 +31,50 @@ INSERT INTO `categoria` VALUES
 (7, 'História'),
 (8, 'Mistério');
 
--- Tabela livro_categoria
-CREATE TABLE IF NOT EXISTS livro_categoria (
-  livro_id INT,
-  categoria_id INT,
-  PRIMARY KEY (livro_id, categoria_id),
-  FOREIGN KEY (livro_id) REFERENCES livro(id),
-  FOREIGN KEY (categoria_id) REFERENCES categoria(id)
-);
+CREATE TABLE `livro` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(45) NOT NULL,
+  `autor` varchar(45) NOT NULL,
+  `descricao` varchar(255) DEFAULT NULL,
+  `capa_url` varchar(100) DEFAULT NULL,
+  `pdf_url` varchar(100) DEFAULT NULL,
+  `avaliacao` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Tabela comentarios
-CREATE TABLE IF NOT EXISTS comentarios (
-  id INT NOT NULL AUTO_INCREMENT,
-  mensagem TEXT NOT NULL,
-  data_registro DATETIME NULL,
-  PRIMARY KEY (id)
-);
+INSERT INTO `livro` (id, titulo, autor, descricao, capa_url, pdf_url, avaliacao) VALUES 
+(1, '1984', 'George Orwell', 'Livro futurista utopico', '/images/1984.jpg', '/images/hpSecreta.pdf', 3),
+(2, 'O Hobbit', 'J.R.R. Tolkien', 'Aventura fantástica na Terra Média', '/images/hobbit.jpg', '/images/hpSecreta.pdf', 3),
+(3, 'Harry Potter e a Pedra Filosofal', 'J.K. Rowling', 'O início da saga do bruxo Harry Potter', '/images/hp.jpg', '/images/hpSecreta.pdf', 2),
+(4, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg', '/images/hpSecreta.pdf', 1),
+(5, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg', '/images/hpSecreta.pdf', 4),
+(6, 'X-Men: Dias de um Futuro Esquecido', 'Chris Claremont', 'Clássico dos quadrinhos dos mutantes', '/images/xmen.jpg', '/images/hpSecreta.pdf', 5);
 
--- Tabela livro_comentario
-CREATE TABLE IF NOT EXISTS livro_comentario (
-  livro_id INT,
-  comentario_id INT,
-  PRIMARY KEY (livro_id, comentario_id),
-  FOREIGN KEY (livro_id) REFERENCES livro(id),
-  FOREIGN KEY (comentario_id) REFERENCES comentarios(id)
-);
+CREATE TABLE `livro_categoria` (
+  `livro_id` int NOT NULL,
+  `categoria_id` int NOT NULL,
+  PRIMARY KEY (`livro_id`,`categoria_id`),
+  KEY `categoria_id` (`categoria_id`),
+  CONSTRAINT `livro_categoria_ibfk_1` FOREIGN KEY (`livro_id`) REFERENCES `livro` (`id`),
+  CONSTRAINT `livro_categoria_ibfk_2` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Inserções nos comentários
+INSERT INTO livro_categoria (livro_id, categoria_id) VALUES
+(1, 3),
+(2, 2),
+(3, 1),
+(4, 3),
+(5, 2),
+(6, 4);
+
+
+CREATE TABLE `comentarios` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `mensagem` text NOT NULL,
+  `data_registro` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 INSERT INTO comentarios (id, mensagem, data_registro) VALUES 
 (1, 'Adorei esse livro, a história é envolvente do começo ao fim!', '2025-06-11 19:09:01'),
 (2, 'Os personagens são muito bem construídos, recomendo a leitura.', '2025-06-11 19:09:01'),
@@ -95,55 +82,63 @@ INSERT INTO comentarios (id, mensagem, data_registro) VALUES
 (4, 'A narrativa é um pouco lenta no início, mas depois melhora bastante.', '2025-06-11 19:09:01'),
 (5, 'Um dos melhores livros que já li sobre esse tema.', '2025-06-11 19:09:01');
 
-CREATE TABLE livro_favorito (
-  user_id INT NOT NULL,
-  livro_id INT NOT NULL,
-  PRIMARY KEY (user_id, livro_id),
-  FOREIGN KEY (user_id) REFERENCES user(id),
-  FOREIGN KEY (livro_id) REFERENCES livro(id)
-);
+CREATE TABLE `livro_comentario` (
+  `livro_id` int NOT NULL,
+  `comentario_id` int NOT NULL,
+  PRIMARY KEY (`livro_id`,`comentario_id`),
+  KEY `comentario_id` (`comentario_id`),
+  CONSTRAINT `livro_comentario_ibfk_1` FOREIGN KEY (`livro_id`) REFERENCES `livro` (`id`),
+  CONSTRAINT `livro_comentario_ibfk_2` FOREIGN KEY (`comentario_id`) REFERENCES `comentarios` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (1, 1);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (1, 2);
+INSERT INTO livro_comentario (livro_id, comentario_id) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
 
--- Livro 2 em três categorias
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 1);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 2);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (2, 3);
+CREATE TABLE `livro_favorito` (
+  `user_id` int NOT NULL,
+  `livro_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`livro_id`),
+  KEY `livro_id` (`livro_id`),
+  CONSTRAINT `livro_favorito_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `livro_favorito_ibfk_2` FOREIGN KEY (`livro_id`) REFERENCES `livro` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Livro 3 em uma categoria
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (3, 1);
+INSERT INTO livro_favorito (user_id, livro_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3);
 
--- Livro 4 em duas categorias
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (4, 2);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (4, 3);
+CREATE TABLE `livro_lido` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int NOT NULL,
+  `livro_id` int NOT NULL,
+  `data_leitura` datetime DEFAULT CURRENT_TIMESTAMP,
+  `status` enum('lido','andamento') NOT NULL DEFAULT 'lido',
+  `percentual` int DEFAULT '100',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_id` (`user_id`,`livro_id`),
+  KEY `livro_id` (`livro_id`),
+  CONSTRAINT `livro_lido_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  CONSTRAINT `livro_lido_ibfk_2` FOREIGN KEY (`livro_id`) REFERENCES `livro` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- Livro 5 em todas as categorias
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 1);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 2);
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (5, 3);
+INSERT INTO livro_lido (user_id, livro_id, data_leitura, status, percentual) VALUES
+(1, 1, '2025-07-07 19:24:04', 'lido', 100),
+(1, 2, '2025-07-07 19:24:09', 'andamento', 40),
+(1, 3, '2025-07-07 19:24:13', 'lido', 100),
+(1, 4, '2025-07-07 19:24:19', 'andamento', 60);
 
--- Livro 6 em uma categoria
-INSERT INTO livro_categoria (livro_id, categoria_id) VALUES (6, 3);
+CREATE TABLE `admin` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `admemail` varchar(100) NOT NULL,
+  `admsenha` varchar(100) NOT NULL,
+  `admnome` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 1);
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (1, 2);
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 3);
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (2, 4);
-INSERT INTO livro_comentario (livro_id, comentario_id) VALUES (3, 5);
-
-
-CREATE TABLE admin (
-	id int(11) auto_increment NOT NULL,
-	admemail varchar(100) NOT NULL,
-	admsenha varchar(100) NOT NULL,
-	admnome varchar(100) NOT NULL,
-	CONSTRAINT admin_pk PRIMARY KEY (id)
-)
-ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_0900_ai_ci;
-
-INSERT INTO admin
-(id, admemail, admsenha, admnome)
-VALUES(0, 'admTeste@gmail.com', 'admSenha', 'Adm Augusto');
+INSERT INTO admin (admemail, admsenha, admnome) VALUES
+('admin@bookhub.com', 'admin123', 'Administrador');

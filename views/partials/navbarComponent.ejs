@@ -7,13 +7,14 @@
   </a>
   <div class="ml-auto d-flex align-items-center gap-2">
     <% if (user) { %>
-      <a class="btn btn-outline-success my-2 my-sm-0" href="/logout">Logout</a>
+      <a class="btn btn-outline-danger my-2 my-sm-0" href="/logout">Logout</a>
       <% } else { %>
         <a class="btn btn-outline-success my-2 my-sm-0" href="/login">Login</a>
         <% } %>
           <a class="btn btn-outline-success my-2 my-sm-0" href="/register">Register</a>
           <a class="btn btn-outline-success my-2 my-sm-0" href="/livros">Livros</a>
           <a class="btn btn-outline-success my-2 my-sm-0" href="/favoritos">Favoritos</a>
+          <a class="btn btn-outline-success my-2 my-sm-0" href="/historico">Lidos</a>
           <% if (user) { %>
             <a href="/perfil?id=<%= user.id %>">
               <i class="bi bi-person-circle ml-2 btn-outline-success" style="font-size: 2rem;"></i>

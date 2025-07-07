@@ -27,7 +27,7 @@
                                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-profiles/avatar-1.webp"
                                         alt="Generic placeholder image" class="img-fluid img-thumbnail mt-4 mb-2"
                                         style="width: 150px; z-index: 1; background-color: #2C2C2C; border-radius: 10px; border: #2C2C2C">
-                                    <button type="button" class="btn btn-outline-success"
+                                    <button type="button" class="btn btn-outline-success mb-2"
                                         onclick="window.location.href='/detalhesPerfil'" data-mdb-ripple-color="dark"
                                         style="z-index: 1;">
                                         Editar Perfil
@@ -63,6 +63,21 @@
                                                 class="borda mx-1" alt="<%= livro.titulo %>" width="auto"
                                                 height="200"></a>
                                         <% }); %>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-4 mt-4"
+                                    style="color: #B0B0B0;">
+                                    <p class="lead fw-normal mb-0">Livros Lidos</p>
+                                </div>
+                                <div class="d-flex flex-wrap">
+                                    <% if (livrosLidos && livrosLidos.length> 0) { %>
+                                        <% livrosLidos.slice(0, 4).forEach(livro=> { %>
+                                            <a href="/descricao?id=<%= livro.id %>"><img src="<%= livro.capa_url %>"
+                                                    class="borda mx-1" alt="<%= livro.titulo %>" width="auto"
+                                                    height="200"></a>
+                                            <% }); %>
+                                                <% } else { %>
+                                                    <span class="text-muted">Nenhum livro lido ainda.</span>
+                                                    <% } %>
                                 </div>
                             </div>
                         </div>

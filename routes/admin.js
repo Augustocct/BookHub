@@ -107,7 +107,7 @@ router.post('/atualizaLivro', verificaLogin, async function (req, res, next) {
 
   try {
     await db.atualizaLivro(livroId, titulo, pdf_url, descricao, capa_url);
-    res.redirect(`/admin/admDescricao?id=${livroId}&atualizado=true`);
+    res.redirect(`/admin/admLivros`);
   } catch (error) {
     console.error("Erro ao atualizar livro:", error);
     res.redirect('/admin/admDescricao?error=' + encodeURIComponent(error.message));
@@ -174,29 +174,71 @@ router.post('/excluiLivro', verificaLogin, async function (req, res, next) {
   }
 });
 
+
 router.post('/login', async function (req, res, next) {
   const admemail = req.body.admemail;
   const admsenha = req.body.admsenha;
-
-  const admin = await db.buscarAdmin(admemail, admsenha);
-
-  if (admin) {
-    req.session.admin = admin; // Salva o admin na sessão
-    res.redirect('/admin/dashboard');
-  } else {
-    res.redirect('/admin');
+  try {
+    const admin = await db.buscarAdmin(admemail, admsenha);
+    if (admin) {
+      req.session.admin = admin; // Salva o admin na sessão
+      res.redirect('/admin/dashboard');
+    } else {
+      res.render('admin/login', { title: 'BookHub', error: 'E-mail ou senha inválidos. Tente novamente.' });
+    }
+  } catch (error) {
+    res.render('admin/login', { title: 'BookHub', error: 'E-mail ou senha inválidos. Tente novamente.' });
   }
 });
 
+
+// Rota com filtro por status e busca
 router.get('/admUser', verificaLogin, async function (req, res, next) {
-  const usuarios = await db.buscaUsuarios();
+  const busca = req.query.busca ? req.query.busca.trim() : '';
+  const status = req.query.status || 'todos';
+  let usuarios = await db.buscaUsuarios();
+
+  // Filtro por status
+  if (status !== 'todos') {
+    usuarios = usuarios.filter(u => u.status === status);
+  }
+  // Filtro por nome/email
+  if (busca) {
+    const buscaLower = busca.toLowerCase();
+    usuarios = usuarios.filter(u =>
+      (u.nome && u.nome.toLowerCase().includes(buscaLower)) ||
+      (u.email && u.email.toLowerCase().includes(buscaLower))
+    );
+  }
+
+  // Busca todos os admins para saber quem é admin
+  const admins = await db.buscaAdmins();
+  // Cria um Set com os emails dos admins para lookup rápido
+  const adminEmails = new Set(admins.map(a => a.admemail));
+  // Adiciona flag isAdmin em cada usuário
+  usuarios.forEach(u => {
+    u.isAdmin = adminEmails.has(u.email);
+  });
   res.render('admin/admUser', {
     title: 'BookHub',
     admin: req.session.admin,
     usuarios: usuarios || [],
+    status,
+    busca
   });
 });
 
+// Rota para remover permissão de admin
+router.post('/removerAdmin', verificaLogin, async function (req, res, next) {
+  const usuarioId = req.body.usuarioId;
+  try {
+    await db.removerAdmin(usuarioId);
+    res.redirect('/admin/admUser?removido=true');
+  } catch (error) {
+    console.error('Erro ao remover admin:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
 // Atualiza status do usuário
 router.post('/atualizaStatusUsuario', verificaLogin, async function (req, res, next) {
   const usuarioId = req.body.usuarioId; // Corrigido para pegar o campo correto do form
@@ -210,12 +252,25 @@ router.post('/atualizaStatusUsuario', verificaLogin, async function (req, res, n
   }
 });
 
+router.post('/promoverUser', verificaLogin, async function (req, res, next) {
+  const usuarioId = req.body.usuarioId; // Corrigido para pegar o campo correto
+  try {
+    // Aqui você pode implementar a lógica de promoção do usuário
+    // Por exemplo, alterar o status para 'admin' ou similar
+    await db.promoverUser(usuarioId);
+    res.redirect('/admin/admUser?promovido=true');
+  } catch (error) {
+    console.error('Erro ao promover usuário:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 function verificaLogin(req, res, next) {
   if (req.session && req.session.admin) {
     next();
     console.log("admin logado:", req.session.admin);
   } else {
-    res.redirect('/login?error=Faça%20login%20para%20acessar');
+    res.redirect('/admin?error=Faça%20login%20como%20administrador%20para%20acessar');
   }
 }
 
