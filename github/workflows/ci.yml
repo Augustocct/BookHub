@@ -1,0 +1,32 @@
+name: CI com Cypress
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  cypress-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Instalar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Instalar dependências do projeto
+        run: npm install
+
+      - name: Executar testes com Cypress
+        run: npx cypress run --reporter mochawesome
+
+      - name: Salvar relatórios mochawesome como artefatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-cypress
+          path: /home/augusto/Documentos

@@ -200,6 +200,11 @@ async function atualizaLivro(id, titulo, pdf_url, descricao, capa_url) {
 
 async function excluiLivro(id) {
     const conn = await connect();
+    // Exclui relacionamentos antes de excluir o livro principal
+    await conn.query("DELETE FROM livro_categoria WHERE livro_id = ?;", [id]);
+    await conn.query("DELETE FROM livro_comentario WHERE livro_id = ?;", [id]);
+    await conn.query("DELETE FROM livro_favorito WHERE livro_id = ?;", [id]);
+    // Agora pode excluir o livro
     const sql = "DELETE FROM livro WHERE id = ?;";
     return await conn.query(sql, [id]);
 }
@@ -210,9 +215,37 @@ async function criaLivro(titulo, autor, pdf_url, descricao, capa_url) {
     return await conn.query(sql, [titulo, autor, pdf_url, descricao, capa_url]);
 }
 
+async function criaCategoria(nome) {
+    const conn = await connect();
+    const sql = "INSERT INTO categoria(nome) VALUES (?);";
+    return await conn.query(sql, [nome]);
+}
+
+async function buscaCategoriaPorId(id) {
+    const conn = await connect();
+    const sql = "SELECT * FROM categoria WHERE id = ?;";
+    const [rows] = await conn.query(sql, [id]);
+    return rows[0];
+}
+
+async function editarCategoriaPorId(id, nome) {
+    const conn = await connect();
+    const sql = "UPDATE categoria SET nome = ? WHERE id = ?;";
+    return await conn.query(sql, [nome, id]);
+}
+
+async function excluiCategoria(id) {
+    const conn = await connect();
+    // Exclui relacionamentos antes de excluir a categoria principal
+    await conn.query("DELETE FROM livro_categoria WHERE categoria_id = ?;", [id]);
+    // Agora pode excluir a categoria
+    const sql = "DELETE FROM categoria WHERE id = ?;";
+    return await conn.query(sql, [id]);
+}
+
 module.exports = {
     registraUser, buscaUser, buscaLivros, buscaCategorias, buscaLivrosPorCategoria, buscaLivrosPorNome,
     buscaLivroPorId, buscaCategoriasPorLivroId, buscaComentarioPorLivroId, adicionaFavorito, buscaUserPorId, atualizaUser,
     buscaLivrosFavoritos, adicionaComentario, removeFavorito, existeFavorito, atualizaNota, buscarAdmin, buscaUsuarios, buscaComentarios,
-    atualizaLivro, excluiLivro, criaLivro
+    atualizaLivro, excluiLivro, criaLivro, criaCategoria, buscaCategoriaPorId, editarCategoriaPorId, excluiCategoria
 };
